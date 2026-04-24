@@ -15,7 +15,7 @@ export function WelcomeView() {
       <div class="wv-content animate-fade">
         <header class="wv-header">
           <div class="badge badge-volt">Diagnostic Phase 01</div>
-          <h1 class="wv-title">CogScreen<span class="dot">.</span></h1>
+          <h1 class="wv-title">Working Memory<span class="dot">.</span></h1>
           <p class="wv-tagline">High-precision cognitive profiling for competitive e-sports.</p>
         </header>
 
