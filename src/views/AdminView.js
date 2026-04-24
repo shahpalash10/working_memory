@@ -424,6 +424,11 @@ function showDetail(email, candidates) {
               <span class="tier-pip tier-${(s.tier||'D').toLowerCase().replace('+','sp')}">${s.tier||'—'}</span>
             </div>
             <p style="color:var(--text-tertiary);font-size:13px;margin-top:4px;">${c.email} · @${c.handle} · Age ${c.age}</p>
+            ${c.metadata?.skips ? `
+              <div style="margin-top:8px; display:flex; gap:6px;">
+                ${Object.keys(c.metadata.skips).map(t => `<span class="badge" style="background:#fbbf2420; color:#fbbf24; border:1px solid #fbbf2440; padding:2px 8px; font-size:10px; font-family:var(--font-mono)">SKIPPED: ${t.toUpperCase()}</span>`).join('')}
+              </div>
+            ` : ''}
           </div>
           <button class="av-btn av-btn-ghost" id="av-close-modal" style="font-size:1.2rem;padding:6px 14px;">✕</button>
         </div>

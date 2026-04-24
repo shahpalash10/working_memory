@@ -23,6 +23,7 @@ export function CompleteView() {
           startedAt: session.startedAt,
           completedAt: new Date().toISOString(),
           trials: session.trials,
+          metadata: session.metadata,
           scores,
         });
         Storage.clearCurrentSession();

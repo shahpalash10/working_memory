@@ -1,79 +1,41 @@
 /* ============================================================
    ANT Engine — Attention Network Test
-   ============================================================
-   Based on Fan et al. (2002).
-   Combines Posner cueing with Eriksen flanker task to measure:
-   - Alerting: ability to maintain vigilance
-   - Orienting: shifting attention spatially
-   - Executive Control: resolving conflict
    ============================================================ */
 
 import { delay, randomDelay, now } from '../utils/timing.js';
 
-/**
- * ANT Configuration
- */
 const ANT_CONFIG = {
-  // Cue types
   cueTypes: ['none', 'center', 'double', 'spatial'],
-  // Flanker types
   flankerTypes: ['congruent', 'incongruent', 'neutral'],
-  // Target can appear above or below fixation
   targetPositions: ['above', 'below'],
-  // Timing (ms)
   fixationDuration: { min: 400, max: 1200 },
   cueDuration: 100,
-  postCueFixation: 200,   // Shorter delay = faster reaction required
-  maxResponseTime: 1200,  // Tightening the window
+  postCueFixation: 200,   
+  maxResponseTime: 1200,  
   postTrialDuration: 400,
   countdownDuration: 600,
-  // Trial counts
-  trialsPerCondition: 8,   // 4 cues × 3 flankers = 12 conditions × 8 = 96 trials
-  // Display
+  trialsPerCondition: 8,   
   arrowSize: 28,
   flankerGap: 4,
-  positionOffset: 80, // px from center for above/below
+  positionOffset: 80, 
 };
 
-/**
- * Arrow characters
- */
-const ARROWS = {
-  left: '←',
-  right: '→',
-  dash: '—', // neutral flanker
-};
+const ARROWS = { left: '←', right: '→', dash: '—' };
 
-/**
- * Generate all ANT trial conditions
- * @returns {Object[]} Shuffled trial conditions
- */
 function generateTrialConditions() {
   const conditions = [];
-
   for (const cueType of ANT_CONFIG.cueTypes) {
     for (const flankerType of ANT_CONFIG.flankerTypes) {
       for (let i = 0; i < ANT_CONFIG.trialsPerCondition; i++) {
-        const targetDirection = Math.random() < 0.5 ? 'left' : 'right';
-        const targetPosition = Math.random() < 0.5 ? 'above' : 'below';
-
         conditions.push({
-          cueType,
-          flankerType,
-          targetDirection,
-          targetPosition,
+          cueType, flankerType,
+          targetDirection: Math.random() < 0.5 ? 'left' : 'right',
+          targetPosition: Math.random() < 0.5 ? 'above' : 'below',
         });
       }
     }
   }
-
-  // Shuffle
-  for (let i = conditions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [conditions[i], conditions[j]] = [conditions[j], conditions[i]];
-  }
-
-  return conditions;
+  return conditions.sort(() => Math.random() - 0.5);
 }
 
 export class ANTEngine {
@@ -82,281 +44,135 @@ export class ANTEngine {
     this.trialData = [];
     this.currentTrialIndex = 0;
     this.isRunning = false;
-    this.aborted = false;
+    this.skippedAt = null;
     this._resolveResponse = null;
     this.responseStartTime = 0;
-
-    // Callbacks
     this.onStateChange = null;
     this.onTrialComplete = null;
     this.onTaskComplete = null;
     this.onCountdown = null;
-
-    // DOM
-    this.container = null;
   }
 
-  /**
-   * Run the complete ANT
-   * @param {HTMLElement} container
-   * @returns {Object[]} Trial data
-   */
   async run(container) {
     this.container = container;
     this.isRunning = true;
-    this.aborted = false;
     this.trials = generateTrialConditions();
-    this.trialData = [];
 
-    // Countdown
     await this.showCountdown();
-
-    // Run all trials
     for (this.currentTrialIndex = 0; this.currentTrialIndex < this.trials.length; this.currentTrialIndex++) {
-      if (this.aborted) break;
+      if (!this.isRunning) break;
       await this.runTrial(this.trials[this.currentTrialIndex]);
     }
 
     this.isRunning = false;
-
-    if (this.onTaskComplete) {
-      this.onTaskComplete(this.trialData);
-    }
-
+    if (this.onTaskComplete) this.onTaskComplete(this.trialData, this.skippedAt);
     return this.trialData;
   }
 
-  /**
-   * Show Ready-Set-Go countdown
-   */
   async showCountdown() {
     const words = ['READY', 'SET', 'GO'];
     const classes = ['ready', 'set', 'go'];
-
     for (let i = 0; i < words.length; i++) {
-      if (this.aborted) return;
-      if (this.onCountdown) {
-        this.onCountdown(words[i], classes[i]);
-      }
+      if (!this.isRunning) return;
+      if (this.onCountdown) this.onCountdown(words[i], classes[i]);
       await delay(ANT_CONFIG.countdownDuration);
     }
   }
 
-  /**
-   * Run a single ANT trial
-   * @param {Object} condition
-   */
   async runTrial(condition) {
-    if (this.aborted) return;
-
+    if (!this.isRunning) return;
     const { cueType, flankerType, targetDirection, targetPosition } = condition;
 
-    // 1. Fixation
     this.renderFixation();
-    if (this.onStateChange) {
-      this.onStateChange('fixation', {
-        trialIndex: this.currentTrialIndex,
-        totalTrials: this.trials.length,
-      });
-    }
+    if (this.onStateChange) this.onStateChange('fixation', { trialIndex: this.currentTrialIndex, totalTrials: this.trials.length });
     await randomDelay(ANT_CONFIG.fixationDuration.min, ANT_CONFIG.fixationDuration.max);
-    if (this.aborted) return;
+    if (!this.isRunning) return;
 
-    // 2. Cue
     this.renderCue(cueType, targetPosition);
     await delay(ANT_CONFIG.cueDuration);
-    if (this.aborted) return;
+    if (!this.isRunning) return;
 
-    // 3. Post-cue fixation
     this.renderFixation();
     await delay(ANT_CONFIG.postCueFixation);
-    if (this.aborted) return;
+    if (!this.isRunning) return;
 
-    // 4. Target + Flankers
     this.renderTarget(targetDirection, flankerType, targetPosition);
     this.responseStartTime = now();
+    if (this.onStateChange) this.onStateChange('target', { trialIndex: this.currentTrialIndex, totalTrials: this.trials.length });
 
-    if (this.onStateChange) {
-      this.onStateChange('target', {
-        trialIndex: this.currentTrialIndex,
-        totalTrials: this.trials.length,
-      });
-    }
-
-    // Wait for response (with timeout)
     const response = await this.waitForResponse(ANT_CONFIG.maxResponseTime);
-    if (this.aborted) return;
-
-    const isCorrect = response.answer === targetDirection;
-    const reactionTime = response.timedOut ? ANT_CONFIG.maxResponseTime : response.reactionTime;
+    if (!this.isRunning) return;
 
     const record = {
       taskType: 'ant',
       trialNumber: this.currentTrialIndex + 1,
-      cueType,
-      flankerType,
-      targetDirection,
-      targetPosition,
-      userResponse: response.answer,
-      isCorrect,
-      reactionTimeMs: reactionTime,
-      timedOut: response.timedOut || false,
+      cueType, flankerType, targetDirection, targetPosition,
+      isCorrect: response.answer === targetDirection,
+      reactionTimeMs: response.reactionTime,
       timestamp: Date.now(),
     };
 
     this.trialData.push(record);
-
-    if (this.onTrialComplete) {
-      this.onTrialComplete(record);
-    }
-
-    // 5. Post-trial fixation
+    if (this.onTrialComplete) this.onTrialComplete(record);
     this.renderFixation();
     await delay(ANT_CONFIG.postTrialDuration);
   }
 
-  /**
-   * Render fixation cross
-   */
   renderFixation() {
-    this.container.innerHTML = `
-      <div class="ant-display-area">
-        <div class="fixation-cross">+</div>
-      </div>
-    `;
+    this.container.innerHTML = `<div class="ant-display-area"><div class="fixation-cross">+</div></div>`;
   }
 
-  /**
-   * Render cue
-   * @param {string} cueType
-   * @param {string} targetPosition
-   */
   renderCue(cueType, targetPosition) {
     const offset = ANT_CONFIG.positionOffset;
-
     let cueHtml = '<div class="ant-display-area"><div class="fixation-cross">+</div>';
-
-    switch (cueType) {
-      case 'center':
-        cueHtml += `<div class="ant-cue" style="top: 50%; transform: translate(-50%, -50%);"></div>`;
-        break;
-      case 'double':
-        cueHtml += `
-          <div class="ant-cue" style="top: calc(50% - ${offset}px); transform: translate(-50%, -50%);"></div>
-          <div class="ant-cue" style="top: calc(50% + ${offset}px); transform: translate(-50%, -50%);"></div>
-        `;
-        break;
-      case 'spatial':
-        const cueY = targetPosition === 'above'
-          ? `calc(50% - ${offset}px)`
-          : `calc(50% + ${offset}px)`;
-        cueHtml += `<div class="ant-cue" style="top: ${cueY}; transform: translate(-50%, -50%);"></div>`;
-        break;
-      case 'none':
-      default:
-        // No cue shown
-        break;
+    if (cueType === 'center') cueHtml += `<div class="ant-cue" style="top:50%;left:50%;transform:translate(-50%,-50%)"></div>`;
+    else if (cueType === 'double') {
+      cueHtml += `<div class="ant-cue" style="top:calc(50% - ${offset}px);left:50%;transform:translate(-50%,-50%)"></div>`;
+      cueHtml += `<div class="ant-cue" style="top:calc(50% + ${offset}px);left:50%;transform:translate(-50%,-50%)"></div>`;
+    } else if (cueType === 'spatial') {
+      const cueY = targetPosition === 'above' ? `calc(50% - ${offset}px)` : `calc(50% + ${offset}px)`;
+      cueHtml += `<div class="ant-cue" style="top:${cueY};left:50%;transform:translate(-50%,-50%)"></div>`;
     }
-
     cueHtml += '</div>';
     this.container.innerHTML = cueHtml;
   }
 
-  /**
-   * Render target with flankers
-   * @param {string} direction - 'left' or 'right'
-   * @param {string} flankerType - 'congruent', 'incongruent', 'neutral'
-   * @param {string} position - 'above' or 'below'
-   */
   renderTarget(direction, flankerType, position) {
-    const targetArrow = ARROWS[direction];
-    let flankerArrow;
-
-    switch (flankerType) {
-      case 'congruent':
-        flankerArrow = targetArrow;
-        break;
-      case 'incongruent':
-        flankerArrow = direction === 'left' ? ARROWS.right : ARROWS.left;
-        break;
-      case 'neutral':
-        flankerArrow = ARROWS.dash;
-        break;
-    }
-
-    const offset = ANT_CONFIG.positionOffset;
-    const top = position === 'above'
-      ? `calc(50% - ${offset}px)`
-      : `calc(50% + ${offset}px)`;
-
+    const tA = ARROWS[direction];
+    const fA = flankerType === 'congruent' ? tA : flankerType === 'incongruent' ? (direction === 'left' ? ARROWS.right : ARROWS.left) : ARROWS.dash;
+    const top = position === 'above' ? `calc(50% - ${ANT_CONFIG.positionOffset}px)` : `calc(50% + ${ANT_CONFIG.positionOffset}px)`;
     this.container.innerHTML = `
       <div class="ant-display-area">
         <div class="fixation-cross">+</div>
-        <div class="ant-display" style="top: ${top};">
-          <span class="ant-arrow">${flankerArrow}</span>
-          <span class="ant-arrow">${flankerArrow}</span>
-          <span class="ant-arrow target">${targetArrow}</span>
-          <span class="ant-arrow">${flankerArrow}</span>
-          <span class="ant-arrow">${flankerArrow}</span>
+        <div class="ant-display" style="top:${top};left:50%;transform:translate(-50%,-50%);display:flex;gap:4px;">
+          <span class="ant-arrow">${fA}</span><span class="ant-arrow">${fA}</span>
+          <span class="ant-arrow target" style="color:var(--accent-volt)">${tA}</span>
+          <span class="ant-arrow">${fA}</span><span class="ant-arrow">${fA}</span>
         </div>
       </div>
     `;
   }
 
-  /**
-   * Wait for response with timeout
-   * @param {number} maxMs
-   * @returns {Promise<Object>}
-   */
   waitForResponse(maxMs) {
     return new Promise(resolve => {
-      let timeoutId;
-
+      let tId;
       this._resolveResponse = (answer) => {
-        clearTimeout(timeoutId);
-        const reactionTime = now() - this.responseStartTime;
-        resolve({ answer, reactionTime, timedOut: false });
+        clearTimeout(tId);
+        resolve({ answer, reactionTime: now() - this.responseStartTime });
         this._resolveResponse = null;
       };
-
-      timeoutId = setTimeout(() => {
+      tId = setTimeout(() => {
         this._resolveResponse = null;
-        resolve({ answer: 'none', reactionTime: maxMs, timedOut: true });
+        resolve({ answer: 'none', reactionTime: maxMs });
       }, maxMs);
     });
   }
 
-  /**
-   * Handle user response (called from view)
-   * @param {'left'|'right'} direction
-   */
-  handleResponse(direction) {
-    if (this._resolveResponse) {
-      this._resolveResponse(direction);
-    }
-  }
+  handleResponse(dir) { if (this._resolveResponse) this._resolveResponse(dir); }
 
-  /**
-   * Abort the task
-   */
-  abort() {
-    this.aborted = true;
+  skip() {
+    this.skippedAt = Date.now();
     this.isRunning = false;
-    if (this._resolveResponse) {
-      this._resolveResponse('none');
-    }
-  }
-
-  /**
-   * Get progress info
-   */
-  getProgress() {
-    return {
-      current: this.currentTrialIndex,
-      total: this.trials.length,
-      percent: this.trials.length > 0
-        ? (this.currentTrialIndex / this.trials.length) * 100
-        : 0,
-    };
+    if (this._resolveResponse) this._resolveResponse('none');
   }
 }
