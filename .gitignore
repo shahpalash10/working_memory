@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Testing
+coverage
+
+# Production
+dist
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Vite / Misc
+.DS_Store
+*.local
+.vercel
+.dev.vars
+.vscode
+
+# System
+Thumbs.db
+desktop.ini
