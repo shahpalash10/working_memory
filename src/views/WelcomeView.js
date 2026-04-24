@@ -166,12 +166,41 @@ export function WelcomeView() {
 
   document.getElementById('reg-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    const name   = document.getElementById('r-name').value;
-    const email  = document.getElementById('r-email').value;
-    const age    = parseInt(document.getElementById('r-age').value);
-    const handle = document.getElementById('r-handle').value;
 
-    Storage.saveCurrentSession({ name, email, age, handle, startedAt: new Date().toISOString(), trials: [] });
+    const name   = document.getElementById('r-name').value.trim();
+    const email  = document.getElementById('r-email').value.trim();
+    const ageRaw = document.getElementById('r-age').value.trim();
+    const handle = document.getElementById('r-handle').value.trim();
+
+    // Clear previous errors
+    document.querySelectorAll('.field-error').forEach(el => el.remove());
+
+    const errors = [];
+
+    if (name.length < 2) errors.push({ id: 'r-name', msg: 'Name must be at least 2 characters' });
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) errors.push({ id: 'r-email', msg: 'Enter a valid email address' });
+
+    const age = parseInt(ageRaw);
+    if (isNaN(age) || age < 13 || age > 60) errors.push({ id: 'r-age', msg: 'Age must be between 13 and 60' });
+
+    if (handle.length < 2) errors.push({ id: 'r-handle', msg: 'Handle must be at least 2 characters' });
+
+    if (errors.length > 0) {
+      errors.forEach(({ id, msg }) => {
+        const input = document.getElementById(id);
+        input.style.borderColor = '#ff4d4d';
+        const errEl = document.createElement('span');
+        errEl.className = 'field-error';
+        errEl.style.cssText = 'color:#ff4d4d;font-size:11px;font-family:var(--font-mono);margin-top:4px;';
+        errEl.textContent = msg;
+        input.parentElement.appendChild(errEl);
+      });
+      return;
+    }
+
+    Storage.saveCurrentSession({ name, email, age, handle, startedAt: new Date().toISOString(), trials: [], metadata: {} });
     navigate('instructions', { task: 'vwm-pure' });
   });
 }

@@ -1,9 +1,9 @@
 /* ============================================================
-   Task Engine — VWM state machine (correct paradigm)
+   Task Engine — VWM state machine (Pro Scrubbed Edition)
    ============================================================ */
 
 import { generateTrial, renderStudy, renderProbe } from './StimulusGenerator.js';
-import { delay, randomDelay, now } from '../utils/timing.js';
+import { now } from '../utils/timing.js';
 
 const SET_SIZES = [1, 2, 3, 4, 6, 8];
 
@@ -32,48 +32,66 @@ export class TaskEngine {
     this.skippedAt = null;
     this._resolveResponse = null;
     this._responseStartTime = 0;
+    this._responseTimerId = null;  // ← must clear this when user responds
+    this._timerId = null;
+    this._timerResolve = null;
 
     this.trialData = [];
     this.maxTrials = 72;
+    this._finished = false;  // guard: onDone fires exactly once
 
-    // Callbacks
-    this.onCountdown = null;  // (word, cls)
-    this.onPhase     = null;  // (phase, meta)
-    this.onTrial     = null;  // (trialRecord)
-    this.onDone      = null;  // (allTrials, skippedAt)
+    this.onCountdown = null;
+    this.onPhase     = null;
+    this.onTrial     = null;
+    this.onDone      = null;
   }
 
   get currentSetSize() { return SET_SIZES[this.ssIdx]; }
 
   get currentDifficulty() {
     if (this.ssIdx <= 1) return 'medium';
-    if (this.ssIdx <= 3) return 'medium';
     return 'hard';
+  }
+
+  /** Interruptible wait */
+  async _wait(ms) {
+    if (!this.running) return;
+    return new Promise(resolve => {
+      this._timerResolve = resolve;
+      this._timerId = setTimeout(() => {
+        this._timerResolve = null;
+        resolve();
+      }, ms);
+    });
   }
 
   respond(answer) {
     if (this._resolveResponse) {
+      clearTimeout(this._responseTimerId);  // ← cancel the timeout so it can't leak
+      this._responseTimerId = null;
       const rt = now() - this._responseStartTime;
-      this._resolveResponse({ answer, rt });
+      const cb = this._resolveResponse;
       this._resolveResponse = null;
+      cb({ answer, rt });
     }
   }
 
   skip() {
     this.skippedAt = Date.now();
     this.running = false;
+    // Break active response wait
     if (this._resolveResponse) {
-      this._resolveResponse({ answer: '__skip__', rt: 0 });
+      clearTimeout(this._responseTimerId);
+      this._responseTimerId = null;
+      const cb = this._resolveResponse;
       this._resolveResponse = null;
+      cb({ answer: '__skip__', rt: 0 });
     }
-  }
-
-  abort() {
-    this.aborted = true;
-    this.running = false;
-    if (this._resolveResponse) {
-      this._resolveResponse({ answer: '__abort__', rt: 0 });
-      this._resolveResponse = null;
+    // Break active delay wait
+    if (this._timerResolve) {
+      clearTimeout(this._timerId);
+      this._timerResolve();
+      this._timerResolve = null;
     }
   }
 
@@ -82,13 +100,20 @@ export class TaskEngine {
     this.running = true;
 
     await this._countdown();
-    if (this.aborted) return;
+    if (!this.running) { this._finish(); return; }
 
-    while (this.running && !this.aborted && this.trialNum < this.maxTrials) {
+    while (this.running && this.trialNum < this.maxTrials) {
       await this._runOneTrial();
+      if (!this.running) break;
       this.trialNum++;
     }
 
+    this._finish();
+  }
+
+  _finish() {
+    if (this._finished) return;  // prevent double-fire
+    this._finished = true;
     this.running = false;
     if (this.onDone) this.onDone(this.trialData, this.skippedAt);
   }
@@ -99,56 +124,51 @@ export class TaskEngine {
       { text: 'SET',   cls: 'set'   },
       { text: 'GO',    cls: 'go'    },
     ]) {
-      if (this.aborted || !this.running) return;
+      if (!this.running) return;
       if (this.onCountdown) this.onCountdown(text, cls);
-      await delay(T.COUNTDOWN_WORD);
+      await this._wait(T.COUNTDOWN_WORD);
     }
   }
 
   _emit(phase, extra = {}) {
     if (this.onPhase) this.onPhase(phase, {
-      trialNum:  this.trialNum,
-      setSize:   this.currentSetSize,
-      ssIdx:     this.ssIdx,
+      trialNum: this.trialNum,
+      setSize: this.currentSetSize,
+      ssIdx: this.ssIdx,
       maxTrials: this.maxTrials,
-      streak:    this.streak,
+      streak: this.streak,
       ...extra,
     });
   }
 
   async _runOneTrial() {
-    const setSize   = this.currentSetSize;
-    const difficulty = this.currentDifficulty;
+    const setSize = this.currentSetSize;
     const isChange = Math.random() < 0.5;
 
     const trial = generateTrial({
-      setSize,
-      isChange,
-      withDistractors: this.withDistractors,
-      shape: this.shape,
-      difficulty,
+      setSize, isChange, withDistractors: this.withDistractors, shape: this.shape, difficulty: this.currentDifficulty
     });
 
     this._emit('blank');
     this.canvas.innerHTML = '<div class="task-fixation">+</div>';
-    await randomDelay(T.BLANK_MIN, T.BLANK_MAX);
-    if (this.aborted || !this.running) return;
+    await this._wait(Math.random() * 200 + T.BLANK_MIN);
+    if (!this.running) return;
 
     this._emit('stimulus', { setSize });
     renderStudy(this.canvas, trial);
-    await delay(T.STIMULUS);
-    if (this.aborted || !this.running) return;
+    await this._wait(T.STIMULUS);
+    if (!this.running) return;
 
     this._emit('retention');
     this.canvas.innerHTML = '<div class="task-fixation">+</div>';
-    await delay(T.RETENTION);
-    if (this.aborted || !this.running) return;
+    await this._wait(T.RETENTION);
+    if (!this.running) return;
 
     this._emit('probe', { isChange });
     renderProbe(this.canvas, trial);
     this._responseStartTime = now();
     const { answer, rt } = await this._waitResponse(T.RESPONSE_TIMEOUT);
-    if (this.aborted || !this.running) return;
+    if (!this.running || answer === '__skip__') return;
 
     const isCorrect = answer === (isChange ? 'different' : 'same');
 
@@ -162,39 +182,34 @@ export class TaskEngine {
       this.streak = 0;
     }
 
-    this._emit('feedback', { isCorrect });
-    this.canvas.innerHTML = `<div class="task-feedback ${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? '✓' : '✗'}</div>`;
-    await delay(T.FEEDBACK);
-
-    this.canvas.innerHTML = '';
-    await delay(T.ITI);
-
     const record = {
       taskType: this.taskType,
       trialNumber: this.trialNum + 1,
-      setSize,
-      isChange,
-      isCorrect,
+      setSize, isChange, isCorrect,
       reactionTimeMs: Math.round(rt),
       timestamp: Date.now(),
-      withDistractors: this.withDistractors,
     };
-
     this.trialData.push(record);
+    // Fire onTrial FIRST so the view can show the overlay
     if (this.onTrial) this.onTrial(record);
+
+    // Clear canvas during feedback pause — overlay handles the tick/cross
+    this.canvas.innerHTML = '';
+    await this._wait(T.FEEDBACK);
+    await this._wait(T.ITI);
   }
 
   _waitResponse(timeout) {
     return new Promise(resolve => {
-      const timer = setTimeout(() => {
-        this._resolveResponse = null;
-        resolve({ answer: 'timeout', rt: timeout });
+      this._resolveResponse = resolve;
+      this._responseTimerId = setTimeout(() => {
+        // Only fire if this is still the active resolver (not already answered)
+        if (this._resolveResponse === resolve) {
+          this._resolveResponse = null;
+          this._responseTimerId = null;
+          resolve({ answer: 'timeout', rt: timeout });
+        }
       }, timeout);
-
-      this._resolveResponse = (result) => {
-        clearTimeout(timer);
-        resolve(result);
-      };
     });
   }
 }
