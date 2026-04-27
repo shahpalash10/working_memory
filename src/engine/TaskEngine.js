@@ -37,7 +37,7 @@ export class TaskEngine {
     this._timerResolve = null;
 
     this.trialData = [];
-    this.maxTrials = 72;
+    this.maxTrials = 48;
     this._finished = false;  // guard: onDone fires exactly once
 
     this.onCountdown = null;

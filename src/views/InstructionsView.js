@@ -8,7 +8,7 @@ import { navigate, injectStyle } from '../router.js';
 const TASK_INFO = {
   'vwm-pure': {
     icon: '🧠',
-    title: 'Visual Working Memory',
+    title: 'VWMC Task',
     tag: 'TASK 1 OF 3',
     tagColor: '#00f0ff',
     color: '#00f0ff',
@@ -25,7 +25,7 @@ const TASK_INFO = {
   },
   'vwm-distractor': {
     icon: '🎯',
-    title: 'Working Memory + Distractors',
+    title: 'VWM Filtering Task',
     tag: 'TASK 2 OF 3',
     tagColor: '#a855f7',
     color: '#a855f7',

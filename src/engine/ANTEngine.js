@@ -14,7 +14,7 @@ const ANT_CONFIG = {
   maxResponseTime: 1200,  
   postTrialDuration: 400,
   countdownDuration: 600,
-  trialsPerCondition: 8,   
+  trialsPerCondition: 4,   
 };
 
 const ARROWS = { left: '←', right: '→', dash: '—' };

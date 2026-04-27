@@ -94,14 +94,24 @@ export function generateTrial({ setSize, isChange, withDistractors = false, shap
 
     // PROBE display: ONE item colored, rest empty frames
     // (structure is identical for same AND different trials)
-    probeItems: targetPos.map((pos, i) => ({
-      ...pos,
-      color: i === probedIdx ? probeColor : null,
-      type: 'target',
-      shape,
-      isEmpty: i !== probedIdx,  // non-probed = empty frame
-      isProbed: i === probedIdx,
-    })),
+    probeItems: [
+      ...targetPos.map((pos, i) => ({
+        ...pos,
+        color: i === probedIdx ? probeColor : null,
+        type: 'target',
+        shape,
+        isEmpty: i !== probedIdx,  // non-probed = empty frame
+        isProbed: i === probedIdx,
+      })),
+      ...distractPos.map((pos, i) => ({
+        ...pos,
+        color: null,
+        type: 'distractor',
+        shape,
+        isEmpty: true,
+        isProbed: false,
+      })),
+    ],
 
     // Scoring data
     originalColors: targetColors,
