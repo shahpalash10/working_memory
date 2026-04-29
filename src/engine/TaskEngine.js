@@ -29,9 +29,12 @@ export class TaskEngine {
       : [{t:2, d:0}, {t:2, d:2}, {t:4, d:0}, {t:4, d:2}];
 
     this.blockIdx = 0;
-    this.trialInBlock = 0;
     this.trialsPerBlock = 10;
-    this.blockCorrect = 0;
+    
+    // Track stats per block
+    this.streak = 0;
+    this.mistakesInBlock = 0;
+    this.trialsInBlock = 0;
 
     this.trialNum = 0;
     this.running  = false;
@@ -116,20 +119,6 @@ export class TaskEngine {
       if (!this.running) break;
       
       this.trialNum++;
-      this.trialInBlock++;
-
-      if (this.trialInBlock >= this.trialsPerBlock) {
-        const accuracy = this.blockCorrect / this.trialsPerBlock;
-        if (accuracy < 0.75) {
-          // Terminate task early
-          break;
-        } else {
-          // Advance to next block
-          this.blockIdx++;
-          this.trialInBlock = 0;
-          this.blockCorrect = 0;
-        }
-      }
     }
 
     this._finish();
@@ -161,7 +150,7 @@ export class TaskEngine {
       distractorCount: this.currentDistractorCount,
       blockIdx: this.blockIdx,
       maxTrials: this.maxTrials,
-      blockCorrect: this.blockCorrect,
+      streak: this.streak,
       ...extra,
     });
   }
@@ -198,8 +187,20 @@ export class TaskEngine {
 
     const isCorrect = answer === (isChange ? 'different' : 'same');
 
+    this.trialsInBlock++;
+
     if (isCorrect) {
-      this.blockCorrect++;
+      this.streak++;
+      if (this.streak >= 2) {
+        // Advance!
+        this.blockIdx++;
+        this.streak = 0;
+        this.mistakesInBlock = 0;
+        this.trialsInBlock = 0;
+      }
+    } else {
+      this.streak = 0;
+      this.mistakesInBlock++;
     }
 
     const record = {
@@ -212,6 +213,12 @@ export class TaskEngine {
     this.trialData.push(record);
     // Fire onTrial FIRST so the view can show the overlay
     if (this.onTrial) this.onTrial(record);
+
+    // After trial processing, check termination
+    // 3 mistakes means mathematically impossible to hit >75% (8/10)
+    if (this.mistakesInBlock >= 3 || this.trialsInBlock >= this.trialsPerBlock) {
+      this.running = false; // Terminate task at their best level
+    }
 
     // Clear canvas during feedback pause — overlay handles the tick/cross
     this.canvas.innerHTML = '';
