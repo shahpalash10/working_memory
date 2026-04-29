@@ -5,6 +5,7 @@
 import { render } from '../utils/dom.js';
 import { Storage } from '../utils/storage.js';
 import { navigate, injectStyle } from '../router.js';
+import { t, getLang, setLang } from '../utils/i18n.js';
 
 export function WelcomeView() {
   render(`
@@ -16,40 +17,43 @@ export function WelcomeView() {
         <header class="wv-header">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 20px;">
             <img src="/xiberlinc_logo.png" alt="Xiberlinc" style="height:42px;" />
-            <div class="badge badge-volt">Task 01/03</div>
+            <div style="display:flex; gap:12px; align-items:center;">
+              <button id="lang-toggle" class="btn-ghost" style="padding:4px 10px; font-size:12px; border-radius:4px;">${t('lang_toggle')}</button>
+              <div class="badge badge-volt">${t('badge_task')}</div>
+            </div>
           </div>
-          <h1 class="wv-title">Attention & Working Memory<span class="dot">.</span></h1>
-          <p class="wv-tagline">High-precision cognitive profiling for competitive e-sports.</p>
+          <h1 class="wv-title">${t('app_title')}<span class="dot">.</span></h1>
+          <p class="wv-tagline">${t('app_tagline')}</p>
         </header>
 
         <div class="wv-main glass-card">
           <form id="reg-form" class="wv-form">
-            <h2 class="form-title">Candidate Intake / Registration</h2>
+            <h2 class="form-title">${t('intake_title')}</h2>
             <div class="input-grid">
               <div class="field">
-                <label>Legal Name</label>
+                <label>${t('label_name')}</label>
                 <input type="text" id="r-name" placeholder="John Doe" required />
               </div>
               <div class="field">
-                <label>Email Address</label>
+                <label>${t('label_email')}</label>
                 <input type="email" id="r-email" placeholder="john@example.com" required />
               </div>
               <div class="field">
-                <label>Age</label>
+                <label>${t('label_age')}</label>
                 <input type="number" id="r-age" min="13" max="60" placeholder="21" required />
               </div>
               <div class="field">
-                <label>Gender</label>
+                <label>${t('label_gender')}</label>
                 <select id="r-gender" required style="background:#000; border:1px solid var(--border-medium); padding:14px; color:#fff; font-family:var(--font-body); font-size:14px;">
-                  <option value="" disabled selected>Select...</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                  <option value="Undisclosed">Do not want to declare</option>
+                  <option value="" disabled selected>${t('gender_select')}</option>
+                  <option value="Male">${t('gender_male')}</option>
+                  <option value="Female">${t('gender_female')}</option>
+                  <option value="Other">${t('gender_other')}</option>
+                  <option value="Undisclosed">${t('gender_none')}</option>
                 </select>
               </div>
               <div class="field" style="grid-column: 1 / -1;">
-                <label>Gamer Handle</label>
+                <label>${t('label_handle')}</label>
                 <input type="text" id="r-handle" placeholder="X_REAPER_X" required />
               </div>
             </div>
@@ -57,12 +61,12 @@ export function WelcomeView() {
             <div class="wv-footer" style="flex-direction: column; align-items: stretch; gap: 16px;">
               <div class="privacy-wrap" style="display:flex; align-items:flex-start; gap:12px;">
                 <input type="checkbox" id="r-privacy" required style="margin-top:2px; width:auto; cursor:pointer;" />
-                <label for="r-privacy" style="font-size:12px; color:#a0a0a5; line-height:1.4; cursor:pointer; font-family:var(--font-body);">I agree to the <a href="#" style="color:var(--accent-volt); text-decoration:none;">Privacy Policy</a> and consent to the collection of my cognitive and device telemetry data for evaluation purposes.</label>
+                <label for="r-privacy" style="font-size:12px; color:#a0a0a5; line-height:1.4; cursor:pointer; font-family:var(--font-body);">${t('privacy_text')}</label>
               </div>
               <p class="notice" style="max-width:none; color:#7a7a7f;">
-                <span>Please secure <strong>12 minutes</strong> to complete this task. If you are not able to complete all tasks in a row within 12 mins, you will need to try again. The system logs you out automatically.</span>
+                <span>${t('disclaimer_text')}</span>
               </p>
-              <button type="submit" class="btn-volt" style="align-self: flex-end;">Initialize Assessment →</button>
+              <button type="submit" class="btn-volt" style="align-self: flex-end;">${t('btn_init')}</button>
             </div>
           </form>
         </div>
@@ -173,11 +177,30 @@ export function WelcomeView() {
 
     .wv-legal {
       margin-top: 48px;
-      display: flex; justify-content: space-between;
+      display: flex; justify-content: center;
       font-family: var(--font-mono); font-size: 10px; color: #3a3a3f;
       text-transform: uppercase; letter-spacing: 0.2em;
     }
+    
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-dim);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-primary);
+    }
   `);
+
+  document.getElementById('lang-toggle').addEventListener('click', () => {
+    const newLang = getLang() === 'en' ? 'ja' : 'en';
+    setLang(newLang);
+    WelcomeView(); // Re-render
+  });
 
   document.getElementById('reg-form').addEventListener('submit', (e) => {
     e.preventDefault();

@@ -3,6 +3,7 @@
    ============================================================ */
 
 import { now } from '../utils/timing.js';
+import { t } from '../utils/i18n.js';
 
 const ANT_CONFIG = {
   cueTypes: ['none', 'center', 'double', 'spatial'],
@@ -100,7 +101,7 @@ export class ANTEngine {
   }
 
   async showCountdown() {
-    const w = ['READY','SET','GO'], c = ['ready','set','go'];
+    const w = [t('eng_ready'), t('eng_set'), t('eng_go')], c = ['ready','set','go'];
     for(let i=0; i<3; i++) {
       if (!this.isRunning) return;
       if (this.onCountdown) this.onCountdown(w[i], c[i]);

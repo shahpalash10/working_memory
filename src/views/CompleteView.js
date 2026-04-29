@@ -6,6 +6,7 @@ import { render } from '../utils/dom.js';
 import { Storage } from '../utils/storage.js';
 import { computeFullScores } from '../scoring/ScoringEngine.js';
 import { injectStyle } from '../router.js';
+import { t } from '../utils/i18n.js';
 
 export function CompleteView() {
   const session = Storage.getCurrentSession();
@@ -31,7 +32,7 @@ export function CompleteView() {
         
         // Update DOM status
         const statusVal = document.querySelector('.cv-row-val');
-        if (statusVal) statusVal.innerHTML = '<span class="cv-dot"></span> Submitted (Cloud Sync Ready)';
+        if (statusVal) statusVal.innerHTML = `<span class="cv-dot"></span> ${t('cv_submit')}`;
       } catch (err) {
         console.error('Scoring/Sync error', err);
       }
@@ -75,38 +76,37 @@ export function CompleteView() {
           </defs>
         </svg>
 
-        <h1 class="cv-heading">Assessment Complete</h1>
+        <h1 class="cv-heading">${t('cv_title')}</h1>
         <p class="cv-message" style="color:var(--text-primary); font-size:1.15rem; font-weight:500; margin-bottom:-10px;">
-          You successfully completed with ${overallAccuracy}% accuracy! Well Done!
+          ${t('cv_acc', { acc: overallAccuracy })}
         </p>
         <p class="cv-message">
-          Your results have been securely recorded and will be reviewed by our team.
-          We'll be in touch soon.
+          ${t('cv_msg')}
         </p>
 
         <div class="cv-receipt">
           <div class="cv-row">
-            <span class="cv-row-label">Status</span>
+            <span class="cv-row-label">${t('cv_status')}</span>
             <span class="cv-row-val">
-              <span class="cv-dot"></span> Submitted
+              <span class="cv-dot"></span> Pending...
             </span>
           </div>
           <div class="cv-row">
-            <span class="cv-row-label">Candidate</span>
+            <span class="cv-row-label">${t('cv_candidate')}</span>
             <span class="cv-row-val">${session?.name || '—'}</span>
           </div>
           <div class="cv-row">
-            <span class="cv-row-label">Tasks completed</span>
+            <span class="cv-row-label">${t('cv_tasks')}</span>
             <span class="cv-row-val">3 / 3 ✓</span>
           </div>
           <div class="cv-row">
-            <span class="cv-row-label">Assessment ID</span>
+            <span class="cv-row-label">${t('cv_id')}</span>
             <span class="cv-row-val mono">${id}</span>
           </div>
         </div>
 
         <p class="cv-footer">
-          You may now close this window.
+          ${t('cv_close')}
         </p>
       </div>
     </div>

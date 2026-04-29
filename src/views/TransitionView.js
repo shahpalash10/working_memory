@@ -4,27 +4,28 @@
 
 import { render } from '../utils/dom.js';
 import { navigate, injectStyle } from '../router.js';
+import { t } from '../utils/i18n.js';
 
-const NEXT_INFO = {
+const getNextInfo = () => ({
   'vwm-distractor': {
     number: 2, total: 3,
     icon: '🎯',
-    title: 'Working Memory + Distractors',
-    desc: 'Same memory task — but gray distractor items will appear alongside the colored targets. Your job: ignore everything gray, remember only the colors.',
+    title: t('t2_title'),
+    desc: t('t2_sum'),
     color: '#a855f7',
   },
   'ant': {
     number: 3, total: 3,
     icon: '⚡',
-    title: 'Attention Network Test',
-    desc: 'A completely different task. Identify the direction of a central arrow as fast as possible, while ignoring surrounding flanker arrows.',
+    title: t('t3_title'),
+    desc: t('t3_sum'),
     color: '#fbbf24',
   },
-};
+});
 
 export function TransitionView(params = {}) {
   const next = params.next || 'vwm-distractor';
-  const info = NEXT_INFO[next] || NEXT_INFO['vwm-distractor'];
+  const info = getNextInfo()[next] || getNextInfo()['vwm-distractor'];
 
   render(`
     <div class="view trv">
@@ -34,13 +35,13 @@ export function TransitionView(params = {}) {
           <path d="M24 40L35 51L56 30" stroke="#34d399" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="trv-path"/>
         </svg>
 
-        <h2 class="trv-title">Task Complete!</h2>
-        <p class="trv-sub">Take a short breath. Continue whenever you feel ready.</p>
+        <h2 class="trv-title">${t('tr_title')}</h2>
+        <p class="trv-sub">${t('tr_break')}</p>
 
         <div class="trv-card" style="border-color:${info.color}22">
           <div class="trv-card-head">
             <span class="trv-badge" style="color:${info.color};background:${info.color}15;border-color:${info.color}30;">UP NEXT</span>
-            <span class="trv-prog">${info.number} of ${info.total}</span>
+            <span class="trv-prog">${info.number} ${t('tr_of3')}</span>
           </div>
           <div class="trv-icon">${info.icon}</div>
           <h3 class="trv-card-title">${info.title}</h3>
@@ -49,12 +50,12 @@ export function TransitionView(params = {}) {
             <div class="trv-bar">
               <div class="trv-bar-fill" style="width:${((info.number - 1) / info.total) * 100}%;background:${info.color}"></div>
             </div>
-            <span class="trv-bar-label">${info.number - 1}/${info.total} complete</span>
+            <span class="trv-bar-label">${info.number - 1} ${t('tr_of3')}</span>
           </div>
         </div>
 
         <button class="trv-cta" id="btn-continue" style="background:linear-gradient(135deg,${info.color},${info.color}99);">
-          Continue →
+          ${t('tr_continue')}
         </button>
       </div>
     </div>

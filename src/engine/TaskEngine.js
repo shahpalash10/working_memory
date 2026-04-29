@@ -4,6 +4,7 @@
 
 import { generateTrial, renderStudy, renderProbe } from './StimulusGenerator.js';
 import { now } from '../utils/timing.js';
+import { t } from '../utils/i18n.js';
 
 
 
@@ -133,9 +134,9 @@ export class TaskEngine {
 
   async _countdown() {
     for (const { text, cls } of [
-      { text: 'READY', cls: 'ready' },
-      { text: 'SET',   cls: 'set'   },
-      { text: 'GO',    cls: 'go'    },
+      { text: t('eng_ready'), cls: 'ready' },
+      { text: t('eng_set'),   cls: 'set'   },
+      { text: t('eng_go'),    cls: 'go'    },
     ]) {
       if (!this.running) return;
       if (this.onCountdown) this.onCountdown(text, cls);

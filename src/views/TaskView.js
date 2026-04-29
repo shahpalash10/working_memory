@@ -8,6 +8,7 @@ import { TaskEngine } from '../engine/TaskEngine.js';
 import { ANTEngine } from '../engine/ANTEngine.js';
 import { navigate, injectStyle } from '../router.js';
 import { CANVAS_SIZE } from '../engine/StimulusGenerator.js';
+import { t } from '../utils/i18n.js';
 
 export function TaskView(taskType = 'vwm-pure') {
   const isANT = taskType === 'ant';
@@ -24,7 +25,7 @@ export function TaskView(taskType = 'vwm-pure') {
           </div>
         </div>
         <div class="hud-right">
-          <button id="task-skip-btn" class="hud-skip-btn">Skip Section ⤑</button>
+          <button id="task-skip-btn" class="hud-skip-btn">${t('tv_skip', { default: 'Skip Section ⤑' })}</button>
           <div class="hud-stats">
              <span id="hud-trial">TRIAL 1</span>
              <span class="hud-sep">/</span>
@@ -49,20 +50,20 @@ export function TaskView(taskType = 'vwm-pure') {
       <!-- Legend (distractor only) -->
       ${isDistractor ? `
         <div class="dist-legend-fixed" id="dist-legend" style="display:none;">
-          <span class="leg-it"><span class="leg-dot" style="background:#3b82f6"></span>Targets</span>
+          <span class="leg-it"><span class="leg-dot" style="background:#3b82f6"></span>${t('tv_targets', { default: 'Targets' })}</span>
           <span class="leg-sep">·</span>
-          <span class="leg-it"><span class="leg-dot" style="background:#6b7280;border:1px dashed #9ca3af"></span>Distractors</span>
+          <span class="leg-it"><span class="leg-dot" style="background:#6b7280;border:1px dashed #9ca3af"></span>${t('tv_distractors', { default: 'Distractors' })}</span>
         </div>
       ` : ''}
 
       <!-- Response buttons -->
       <div class="task-response" id="task-response" style="display:none;">
         ${!isANT ? `
-          <button class="resp-btn same-btn" id="btn-same">SAME <span class="resp-key">S</span></button>
-          <button class="resp-btn diff-btn" id="btn-diff">DIFFERENT <span class="resp-key">D</span></button>
+          <button class="resp-btn same-btn" id="btn-same">${t('key_same').toUpperCase()} <span class="resp-key">S</span></button>
+          <button class="resp-btn diff-btn" id="btn-diff">${t('key_diff').toUpperCase()} <span class="resp-key">D</span></button>
         ` : `
-          <button class="resp-btn left-btn" id="btn-left">← LEFT <span class="resp-key">←</span></button>
-          <button class="resp-btn right-btn" id="btn-right">RIGHT → <span class="resp-key">→</span></button>
+          <button class="resp-btn left-btn" id="btn-left">← ${t('key_left').toUpperCase()} <span class="resp-key">←</span></button>
+          <button class="resp-btn right-btn" id="btn-right">${t('key_right').toUpperCase()} → <span class="resp-key">→</span></button>
         `}
       </div>
     </div>
@@ -129,7 +130,7 @@ function runVWM(taskType, isDistractor, cdWrap, cdWord, stimWrap, canvas,
     if (e) { e.preventDefault(); e.stopPropagation(); }
     if (dead) return;
     
-    skipBtn.textContent = 'SKIPPING...';
+    skipBtn.textContent = t('tv_skipping', { default: 'SKIPPING...' });
     skipBtn.style.color = 'var(--accent-volt)';
     skipBtn.style.borderColor = 'var(--accent-volt)';
     
@@ -213,7 +214,7 @@ function runANT(cdWrap, cdWord, stimWrap, canvas, responseArea,
     if (e) { e.preventDefault(); e.stopPropagation(); }
     if (dead) return;
     
-    skipBtn.textContent = 'SKIPPING...';
+    skipBtn.textContent = t('tv_skipping', { default: 'SKIPPING...' });
     skipBtn.style.color = 'var(--accent-volt)';
     skipBtn.style.borderColor = 'var(--accent-volt)';
     

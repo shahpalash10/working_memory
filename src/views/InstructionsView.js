@@ -4,59 +4,41 @@
 
 import { render } from '../utils/dom.js';
 import { navigate, injectStyle } from '../router.js';
+import { t } from '../utils/i18n.js';
 
-const TASK_INFO = {
+const getTaskInfo = () => ({
   'vwm-pure': {
     icon: '🧠',
-    title: 'Working Memory Capacity task',
-    tag: 'TASK 1 OF 3',
+    title: t('t1_title'),
+    tag: t('t1_tag'),
     tagColor: '#00f0ff',
     color: '#00f0ff',
-    summary: 'This task challenges your visual short-term memory capacity. How many items can you remember?',
-    steps: [
-      'A fixation cross <strong>+</strong> appears — focus on it.',
-      'You will briefly see coloured squares on the screen. Your task is to remember the color of the square as many items as you can within the brief flash moment.',
-      'After a blank, the squares reappear at which you need to indicate the one square still being coloured (“the target”) is same as the previous display or different by pressing a button.',
-      '<strong style="color:var(--accent-volt)">Respond as accurate as possible, try your best to get all trials correct. Speed is not important in this task.</strong>',
-    ],
-    keys: [{ label: 'Same', key: 'S', color: '#34d399' }, { label: 'Different', key: 'D', color: '#f87171' }],
+    summary: t('t1_sum'),
+    steps: [ t('t1_s1'), t('t1_s2'), t('t1_s3'), t('t1_s4') ],
+    keys: [{ label: t('key_same'), key: 'S', color: '#34d399' }, { label: t('key_diff'), key: 'D', color: '#f87171' }],
   },
   'vwm-distractor': {
     icon: '🎯',
-    title: 'Working Memory Filtering task',
-    tag: 'TASK 2 OF 3',
+    title: t('t2_title'),
+    tag: t('t2_tag'),
     tagColor: '#a855f7',
     color: '#a855f7',
-    summary: 'Same as before — but now <strong>gray distractor items</strong> also appear. You must <strong>completely ignore</strong> the gray items and remember only the colored ones.',
+    summary: t('t2_sum'),
     distractor_note: true,
-    steps: [
-      'Colored target items AND gray distractor items appear together.',
-      '<strong>Focus only on the colored items</strong> — ignore everything gray.',
-      'A blank period follows — hold the target colors in memory.',
-      'One target reappears in color; the rest are empty outlines.',
-      'Decide if that one colored item is the SAME or DIFFERENT.',
-      '<strong style="color:var(--accent-volt)">Respond as accurate as possible, try your best to get all trials correct. Speed is not important in this task.</strong>',
-    ],
-    keys: [{ label: 'Same', key: 'S', color: '#34d399' }, { label: 'Different', key: 'D', color: '#f87171' }],
+    steps: [ t('t2_s1'), t('t2_s2'), t('t2_s3'), t('t2_s4'), t('t2_s5'), t('t2_s6') ],
+    keys: [{ label: t('key_same'), key: 'S', color: '#34d399' }, { label: t('key_diff'), key: 'D', color: '#f87171' }],
   },
   'ant': {
     icon: '⚡',
-    title: 'Attention Network Test',
-    tag: 'TASK 3 OF 3',
+    title: t('t3_title'),
+    tag: t('t3_tag'),
     tagColor: '#fbbf24',
     color: '#fbbf24',
-    summary: 'An arrow will appear on screen, flanked by other arrows. Identify the direction of the <strong>center arrow only</strong> as fast as possible.',
-    steps: [
-      'A fixation cross appears in the center.',
-      'Sometimes a brief circle cue will flash — indicating timing or location.',
-      'An arrow target appears above or below center, surrounded by flankers.',
-      'Identify only the <strong>center arrow</strong> direction — ignore flankers.',
-      'Press <kbd>←</kbd> for LEFT, <kbd>→</kbd> for RIGHT.',
-      'Respond as quickly and accurately as possible.',
-    ],
-    keys: [{ label: 'Left', key: '←', color: '#00f0ff' }, { label: 'Right', key: '→', color: '#a855f7' }],
+    summary: t('t3_sum'),
+    steps: [ t('t3_s1'), t('t3_s2'), t('t3_s3'), t('t3_s4'), t('t3_s5'), t('t3_s6') ],
+    keys: [{ label: t('key_left'), key: '←', color: '#00f0ff' }, { label: t('key_right'), key: '→', color: '#a855f7' }],
   },
-};
+});
 
 const NEXT_ROUTE = {
   'vwm-pure': 'task/vwm-pure',
@@ -66,7 +48,7 @@ const NEXT_ROUTE = {
 
 export function InstructionsView(params = {}) {
   const taskKey = params.task || 'vwm-pure';
-  const info = TASK_INFO[taskKey];
+  const info = getTaskInfo()[taskKey];
   if (!info) { navigate(''); return; }
 
   render(`
@@ -89,10 +71,10 @@ export function InstructionsView(params = {}) {
               <div class="iv-dist-square distractor-sq"></div>
             </div>
             <div class="iv-dist-labels">
-              <span><span class="iv-dot" style="background:#3b82f6"></span> Colored = Remember these</span>
-              <span><span class="iv-dot" style="background:#6b7280;border:1px dashed #9ca3af"></span> Gray = IGNORE (distractors)</span>
+              <span><span class="iv-dot" style="background:#3b82f6"></span> ${t('dist_color')}</span>
+              <span><span class="iv-dot" style="background:#6b7280;border:1px dashed #9ca3af"></span> ${t('dist_gray')}</span>
             </div>
-            <p class="iv-dist-tip">This task measures your ability to <strong>filter out irrelevant information</strong> while maintaining memory for relevant items.</p>
+            <p class="iv-dist-tip">${t('dist_tip')}</p>
           </div>
         ` : ''}
 
@@ -104,7 +86,7 @@ export function InstructionsView(params = {}) {
           ` : ''}
 
         <div class="iv-steps-card">
-          <h3 class="iv-steps-title">Step by Step</h3>
+          <h3 class="iv-steps-title">${t('step_title')}</h3>
           <ol class="iv-steps">
             ${info.steps.map(s => `<li>${s}</li>`).join('')}
           </ol>
@@ -120,7 +102,7 @@ export function InstructionsView(params = {}) {
         </div>
 
         <button class="iv-cta" id="btn-start" style="background:linear-gradient(135deg,${info.color},${info.color}99);">
-          I'm Ready — Begin →
+          ${t('btn_ready')}
         </button>
       </div>
     </div>
