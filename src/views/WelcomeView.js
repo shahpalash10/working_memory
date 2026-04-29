@@ -14,7 +14,10 @@ export function WelcomeView() {
 
       <div class="wv-content animate-fade">
         <header class="wv-header">
-          <div class="badge badge-volt">Task 01/03</div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 20px;">
+            <img src="/xiberlinc_logo.png" alt="Xiberlinc" style="height:42px;" />
+            <div class="badge badge-volt">Task 01/03</div>
+          </div>
           <h1 class="wv-title">Attention & Working Memory<span class="dot">.</span></h1>
           <p class="wv-tagline">High-precision cognitive profiling for competitive e-sports.</p>
         </header>
@@ -64,11 +67,8 @@ export function WelcomeView() {
           </form>
         </div>
 
-        <footer class="wv-legal" style="align-items: center;">
+        <footer class="wv-legal" style="justify-content:center;">
           <span>v1.2.4-stable</span>
-          <span style="display:flex; align-items:center; gap:10px; font-family:var(--font-body); font-size:13px; text-transform:none; letter-spacing:normal; color:var(--text-secondary);">
-            Powered by <img src="/xiberlinc_logo.png" alt="Xiberlinc" style="height:28px;" />
-          </span>
         </footer>
       </div>
     </div>
