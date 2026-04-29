@@ -64,9 +64,11 @@ export function WelcomeView() {
           </form>
         </div>
 
-        <footer class="wv-legal">
+        <footer class="wv-legal" style="align-items: center;">
           <span>v1.2.4-stable</span>
-          <span style="display:flex; align-items:center; gap:8px;"><img src="/xiberlinc_logo.png" alt="" style="height:14px; opacity:0.8; filter:grayscale(1) brightness(2);"/> Powered by Xiberlinc</span>
+          <span style="display:flex; align-items:center; gap:10px; font-family:var(--font-body); font-size:13px; text-transform:none; letter-spacing:normal; color:var(--text-secondary);">
+            Powered by <img src="/xiberlinc_logo.png" alt="Xiberlinc" style="height:28px;" />
+          </span>
         </footer>
       </div>
     </div>
