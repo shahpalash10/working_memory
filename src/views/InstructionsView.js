@@ -96,6 +96,13 @@ export function InstructionsView(params = {}) {
           </div>
         ` : ''}
 
+          <!-- Schematics placeholder. Renders if the image exists in the public directory -->
+          ${taskKey.startsWith('vwm') ? `
+            <div class="iv-schematics">
+              <img src="/vwm_schematics.png" alt="Task Schematics" onerror="this.style.display='none'" style="max-width:100%; border-radius:12px; display:block; margin: 0 auto; border: 1px solid rgba(255,255,255,0.1);" />
+            </div>
+          ` : ''}
+
         <div class="iv-steps-card">
           <h3 class="iv-steps-title">Step by Step</h3>
           <ol class="iv-steps">

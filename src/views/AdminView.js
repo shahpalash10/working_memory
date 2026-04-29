@@ -288,7 +288,7 @@ async function showDashboard() {
             <div class="av-stat-val" style="color:#00f0ff">${stats.avgComposite}</div>
           </div>
           <div class="av-stat">
-            <div class="av-stat-label">Avg K (pure)</div>
+            <div class="av-stat-label">Avg Cowan's K</div>
             <div class="av-stat-val" style="color:#a855f7">${stats.avgK}</div>
           </div>
           <div class="av-stat">
@@ -340,8 +340,8 @@ async function showDashboard() {
                     <th>Age</th>
                     <th>Tier</th>
                     <th>Score</th>
-                    <th>K Pure</th>
-                    <th>K Dist</th>
+                    <th>Cowan's K</th>
+                    <th>Cowan's K (Dist)</th>
                     <th>Max N</th>
                     <th>Avg RT</th>
                     <th>Acc Pure</th>
@@ -436,8 +436,8 @@ function showDetail(email, candidates) {
           <div class="av-metrics">
             ${[
               ['Composite', (s.compositeScore||0).toFixed(1), '#00f0ff'],
-              ['K Pure',    (s.kPure||0).toFixed(2),          '#a855f7'],
-              ['K Dist.',   (s.kDistractor||0).toFixed(2),    '#c084fc'],
+              ['Cowan\'s K', (s.kPure||0).toFixed(2),          '#a855f7'],
+              ['Cowan K(Dist)', (s.kDistractor||0).toFixed(2), '#c084fc'],
               ['Max N',     s.maxSetSize||0,                   '#f0f0f5'],
               ['Avg RT',    `${(s.meanRT||0).toFixed(0)}ms`,  '#fbbf24'],
               ['Acc Pure',  `${((s.accuracyPure||0)*100).toFixed(0)}%`, '#34d399'],
@@ -450,7 +450,7 @@ function showDetail(email, candidates) {
             `).join('')}
           </div>
 
-          <div class="av-chart-title">K Score by Set Size (VWM Pure)</div>
+          <div class="av-chart-title">Cowan's K by Set Size (VWM Pure)</div>
           <div class="av-chart">
             ${setSizes.map(n => {
               const k = kData[n]?.k || 0;
@@ -483,7 +483,7 @@ function showDetail(email, candidates) {
             <div class="av-chart-title">Component Scores (0–100)</div>
             <div class="av-chart">
               ${Object.entries(s.componentScores).map(([key, val]) => {
-                const LABELS = { kPure:'K Pure',kDistractor:'K Dist',maxSetSize:'MaxN',rtEfficiency:'RT Eff',alerting:'Alert',orienting:'Orient',executive:'Exec' };
+                const LABELS = { kPure:'CowanK',kDistractor:'CowanK(Dist)',maxSetSize:'MaxN',rtEfficiency:'RT Eff',alerting:'Alert',orienting:'Orient',executive:'Exec' };
                 const color = val>=70?'#34d399':val>=40?'#fbbf24':'#f87171';
                 return `
                   <div class="av-bar-col">
