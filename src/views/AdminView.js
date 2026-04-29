@@ -423,7 +423,7 @@ function showDetail(email, candidates) {
               <h2>${c.name}</h2>
               <span class="tier-pip tier-${(s.tier||'D').toLowerCase().replace('+','sp')}">${s.tier||'—'}</span>
             </div>
-            <p style="color:var(--text-tertiary);font-size:13px;margin-top:4px;">${c.email} · @${c.handle} · Age ${c.age}</p>
+            <p style="color:var(--text-tertiary);font-size:13px;margin-top:4px;">${c.email} · @${c.handle} · Age ${c.age} · ${c.gender || '—'}</p>
             ${c.metadata?.skips ? `
               <div style="margin-top:8px; display:flex; gap:6px;">
                 ${Object.keys(c.metadata.skips).map(t => `<span class="badge" style="background:#fbbf2420; color:#fbbf24; border:1px solid #fbbf2440; padding:2px 8px; font-size:10px; font-family:var(--font-mono)">SKIPPED: ${t.toUpperCase()}</span>`).join('')}
@@ -496,11 +496,18 @@ function showDetail(email, candidates) {
             </div>
           ` : ''}
 
-          <div style="display:flex;gap:12px;margin-top:8px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);">
-            <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-tertiary);">
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.06);">
+            <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary);">
               Total trials: ${(s.vwmPure?.totalTrials||0)+(s.vwmDistractor?.totalTrials||0)+(s.ant?.totalTrials||0)}
               · Completed: ${c.completedAt ? new Date(c.completedAt).toLocaleString() : '—'}
             </div>
+            ${c.metadata ? `
+              <div style="font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary); background:rgba(255,255,255,0.03); padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); margin-top:8px;">
+                <div style="margin-bottom:4px; color:var(--text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Device Telemetry</div>
+                <div>Resolution: ${c.metadata.windowWidth}x${c.metadata.windowHeight}</div>
+                <div style="margin-top:4px; opacity:0.7; line-height:1.4; word-break:break-all;">Agent: ${c.metadata.userAgent}</div>
+              </div>
+            ` : ''}
           </div>
         </div>
       </div>
