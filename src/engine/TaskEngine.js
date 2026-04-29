@@ -5,7 +5,7 @@
 import { generateTrial, renderStudy, renderProbe } from './StimulusGenerator.js';
 import { now } from '../utils/timing.js';
 
-const SET_SIZES = [1, 2, 3, 4, 6, 8];
+
 
 const T = {
   COUNTDOWN_WORD: 700,
@@ -19,13 +19,20 @@ const T = {
 };
 
 export class TaskEngine {
-  constructor({ taskType = 'vwm-pure', withDistractors = false, shape = 'square' } = {}) {
+  constructor({ taskType = 'vwm-pure', shape = 'square' } = {}) {
     this.taskType     = taskType;
-    this.withDistractors = withDistractors;
     this.shape        = shape;
 
-    this.ssIdx   = 0;
-    this.streak  = 0;
+    // Define condition blocks
+    this.blocks = taskType === 'vwm-pure'
+      ? [{t:1, d:0}, {t:2, d:0}, {t:3, d:0}, {t:4, d:0}, {t:6, d:0}, {t:8, d:0}]
+      : [{t:2, d:0}, {t:2, d:2}, {t:4, d:0}, {t:4, d:2}];
+
+    this.blockIdx = 0;
+    this.trialInBlock = 0;
+    this.trialsPerBlock = 10;
+    this.blockCorrect = 0;
+
     this.trialNum = 0;
     this.running  = false;
     this.aborted  = false;
@@ -37,7 +44,7 @@ export class TaskEngine {
     this._timerResolve = null;
 
     this.trialData = [];
-    this.maxTrials = 48;
+    this.maxTrials = this.blocks.length * this.trialsPerBlock;
     this._finished = false;  // guard: onDone fires exactly once
 
     this.onCountdown = null;
@@ -46,10 +53,12 @@ export class TaskEngine {
     this.onDone      = null;
   }
 
-  get currentSetSize() { return SET_SIZES[this.ssIdx]; }
+  get currentCondition() { return this.blocks[this.blockIdx] || this.blocks[this.blocks.length-1]; }
+  get currentSetSize() { return this.currentCondition.t; }
+  get currentDistractorCount() { return this.currentCondition.d; }
 
   get currentDifficulty() {
-    if (this.ssIdx <= 1) return 'medium';
+    if (this.currentSetSize <= 2 && this.currentDistractorCount === 0) return 'medium';
     return 'hard';
   }
 
@@ -102,10 +111,25 @@ export class TaskEngine {
     await this._countdown();
     if (!this.running) { this._finish(); return; }
 
-    while (this.running && this.trialNum < this.maxTrials) {
+    while (this.running && this.blockIdx < this.blocks.length) {
       await this._runOneTrial();
       if (!this.running) break;
+      
       this.trialNum++;
+      this.trialInBlock++;
+
+      if (this.trialInBlock >= this.trialsPerBlock) {
+        const accuracy = this.blockCorrect / this.trialsPerBlock;
+        if (accuracy < 0.75) {
+          // Terminate task early
+          break;
+        } else {
+          // Advance to next block
+          this.blockIdx++;
+          this.trialInBlock = 0;
+          this.blockCorrect = 0;
+        }
+      }
     }
 
     this._finish();
@@ -134,19 +158,21 @@ export class TaskEngine {
     if (this.onPhase) this.onPhase(phase, {
       trialNum: this.trialNum,
       setSize: this.currentSetSize,
-      ssIdx: this.ssIdx,
+      distractorCount: this.currentDistractorCount,
+      blockIdx: this.blockIdx,
       maxTrials: this.maxTrials,
-      streak: this.streak,
+      blockCorrect: this.blockCorrect,
       ...extra,
     });
   }
 
   async _runOneTrial() {
     const setSize = this.currentSetSize;
+    const distractorCount = this.currentDistractorCount;
     const isChange = Math.random() < 0.5;
 
     const trial = generateTrial({
-      setSize, isChange, withDistractors: this.withDistractors, shape: this.shape, difficulty: this.currentDifficulty
+      setSize, distractorCount, isChange, shape: this.shape, difficulty: this.currentDifficulty
     });
 
     this._emit('blank');
@@ -173,13 +199,7 @@ export class TaskEngine {
     const isCorrect = answer === (isChange ? 'different' : 'same');
 
     if (isCorrect) {
-      this.streak++;
-      if (this.streak >= 2 && this.ssIdx < SET_SIZES.length - 1) {
-        this.ssIdx++;
-        this.streak = 0;
-      }
-    } else {
-      this.streak = 0;
+      this.blockCorrect++;
     }
 
     const record = {

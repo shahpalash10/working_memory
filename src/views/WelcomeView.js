@@ -14,8 +14,8 @@ export function WelcomeView() {
 
       <div class="wv-content animate-fade">
         <header class="wv-header">
-          <div class="badge badge-volt">Diagnostic Phase 01</div>
-          <h1 class="wv-title">Working Memory<span class="dot">.</span></h1>
+          <div class="badge badge-volt">Task 01/03</div>
+          <h1 class="wv-title">Attention & Working Memory<span class="dot">.</span></h1>
           <p class="wv-tagline">High-precision cognitive profiling for competitive e-sports.</p>
         </header>
 
@@ -36,24 +36,37 @@ export function WelcomeView() {
                 <input type="number" id="r-age" min="13" max="60" placeholder="21" required />
               </div>
               <div class="field">
+                <label>Gender</label>
+                <select id="r-gender" required style="background:#000; border:1px solid var(--border-medium); padding:14px; color:#fff; font-family:var(--font-body); font-size:14px;">
+                  <option value="" disabled selected>Select...</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                  <option value="Undisclosed">Do not want to declare</option>
+                </select>
+              </div>
+              <div class="field" style="grid-column: 1 / -1;">
                 <label>Gamer Handle</label>
                 <input type="text" id="r-handle" placeholder="X_REAPER_X" required />
               </div>
             </div>
 
-            <div class="wv-footer">
-              <p class="notice">
-                <span>By proceeding, you acknowledge that this is a high-performance evaluation. </span>
-                <strong>Estimated duration: 12 minutes.</strong>
+            <div class="wv-footer" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <div class="privacy-wrap" style="display:flex; align-items:flex-start; gap:12px;">
+                <input type="checkbox" id="r-privacy" required style="margin-top:2px; width:auto; cursor:pointer;" />
+                <label for="r-privacy" style="font-size:12px; color:#a0a0a5; line-height:1.4; cursor:pointer; font-family:var(--font-body);">I agree to the <a href="#" style="color:var(--accent-volt); text-decoration:none;">Privacy Policy</a> and consent to the collection of my cognitive and device telemetry data for evaluation purposes.</label>
+              </div>
+              <p class="notice" style="max-width:none; color:#7a7a7f;">
+                <span>Please secure <strong>12 minutes</strong> to complete this task. If you are not able to complete all tasks in a row within 12 mins, you will need to try again. The system logs you out automatically.</span>
               </p>
-              <button type="submit" class="btn-volt">Initialize Assessment →</button>
+              <button type="submit" class="btn-volt" style="align-self: flex-end;">Initialize Assessment →</button>
             </div>
           </form>
         </div>
 
         <footer class="wv-legal">
           <span>v1.2.4-stable</span>
-          <span>© Xiberlinc Cognitive Systems</span>
+          <span style="display:flex; align-items:center; gap:8px;"><img src="/xiberlinc_logo.png" alt="" style="height:14px; opacity:0.8; filter:grayscale(1) brightness(2);"/> Powered by Xiberlinc</span>
         </footer>
       </div>
     </div>
@@ -98,8 +111,8 @@ export function WelcomeView() {
 
     .wv-tagline {
       font-size: 1.1rem;
-      max-width: 450px;
       color: #7a7a7f;
+      white-space: nowrap;
     }
 
     .form-title {
@@ -170,6 +183,7 @@ export function WelcomeView() {
     const name   = document.getElementById('r-name').value.trim();
     const email  = document.getElementById('r-email').value.trim();
     const ageRaw = document.getElementById('r-age').value.trim();
+    const gender = document.getElementById('r-gender').value;
     const handle = document.getElementById('r-handle').value.trim();
 
     // Clear previous errors
@@ -200,7 +214,13 @@ export function WelcomeView() {
       return;
     }
 
-    Storage.saveCurrentSession({ name, email, age, handle, startedAt: new Date().toISOString(), trials: [], metadata: {} });
+    const metadata = {
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+      userAgent: navigator.userAgent
+    };
+
+    Storage.saveCurrentSession({ name, email, age, gender, handle, startedAt: new Date().toISOString(), trials: [], metadata });
     navigate('instructions', { task: 'vwm-pure' });
   });
 }

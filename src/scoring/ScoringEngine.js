@@ -3,7 +3,7 @@
    ============================================================ */
 
 /**
- * Calculate Pashler's K for VWM tasks
+ * Calculate Cowan's K for VWM tasks
  * K = N × (H - F)
  * H = hit rate (proportion of "different" trials correctly called "different")
  * F = false alarm rate (proportion of "same" trials incorrectly called "different")
@@ -47,7 +47,7 @@ export function computeVWMScores(trials) {
     const falseAlarms = sameTrials.filter(t => !t.isCorrect).length;
     const falseAlarmRate = sameTrials.length > 0 ? falseAlarms / sameTrials.length : 0;
 
-    // Pashler's K
+    // Cowan's K
     const k = Math.max(0, n * (hitRate - falseAlarmRate));
     kScores[n] = {
       k: k,

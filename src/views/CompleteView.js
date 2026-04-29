@@ -42,6 +42,10 @@ export function CompleteView() {
 
   const id = 'CS-' + Date.now().toString(36).toUpperCase().slice(-6) + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
 
+  const totalTrials = session?.trials?.length || 0;
+  const correctTrials = session?.trials?.filter(t => t.isCorrect).length || 0;
+  const overallAccuracy = totalTrials > 0 ? Math.round((correctTrials / totalTrials) * 100) : 0;
+
   render(`
     <div class="view cv">
       <!-- Floating particles -->
@@ -72,8 +76,10 @@ export function CompleteView() {
         </svg>
 
         <h1 class="cv-heading">Assessment Complete</h1>
+        <p class="cv-message" style="color:var(--text-primary); font-size:1.15rem; font-weight:500; margin-bottom:-10px;">
+          You successfully completed with ${overallAccuracy}% accuracy! Well Done!
+        </p>
         <p class="cv-message">
-          Thank you for completing the CogScreen cognitive assessment.
           Your results have been securely recorded and will be reviewed by our team.
           We'll be in touch soon.
         </p>

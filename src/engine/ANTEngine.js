@@ -6,7 +6,7 @@ import { now } from '../utils/timing.js';
 
 const ANT_CONFIG = {
   cueTypes: ['none', 'center', 'double', 'spatial'],
-  flankerTypes: ['congruent', 'incongruent', 'neutral'],
+  flankerTypes: ['congruent', 'incongruent'],
   targetPositions: ['above', 'below'],
   fixationDuration: { min: 400, max: 1200 },
   cueDuration: 100,
@@ -17,7 +17,7 @@ const ANT_CONFIG = {
   trialsPerCondition: 4,   
 };
 
-const ARROWS = { left: '←', right: '→', dash: '—' };
+const ARROWS = { left: '←', right: '→' };
 
 export class ANTEngine {
   constructor() {
@@ -169,24 +169,24 @@ export class ANTEngine {
   renderFixation() { this.container.innerHTML = `<div class="task-fixation">+</div>`; }
 
   renderCue(type, pos) {
-    const o = 80;
+    const o = '15vmin';
     let h = `<div class="task-fixation">+</div>`;
-    if (type === 'center') h += `<div class="ant-cue" style="position:absolute;top:50%;left:50%;width:12px;height:12px;background:var(--accent-volt);transform:translate(-50%,-50%)"></div>`;
+    if (type === 'center') h += `<div class="ant-cue" style="position:absolute;top:50%;left:50%;width:2vmin;height:2vmin;background:var(--accent-volt);transform:translate(-50%,-50%)"></div>`;
     else if (type === 'double') {
-      h += `<div class="ant-cue" style="position:absolute;top:calc(50% - ${o}px);left:50%;width:12px;height:12px;background:var(--accent-volt);transform:translate(-50%,-50%)"></div>`;
-      h += `<div class="ant-cue" style="position:absolute;top:calc(50% + ${o}px);left:50%;width:12px;height:12px;background:var(--accent-volt);transform:translate(-50%,-50%)"></div>`;
+      h += `<div class="ant-cue" style="position:absolute;top:calc(50% - ${o});left:50%;width:2vmin;height:2vmin;background:var(--accent-volt);transform:translate(-50%,-50%)"></div>`;
+      h += `<div class="ant-cue" style="position:absolute;top:calc(50% + ${o});left:50%;width:2vmin;height:2vmin;background:var(--accent-volt);transform:translate(-50%,-50%)"></div>`;
     } else if (type === 'spatial') {
-      const y = pos === 'above' ? `calc(50% - ${o}px)` : `calc(50% + ${o}px)`;
-      h += `<div class="ant-cue" style="position:absolute;top:${y};left:50%;width:12px;height:12px;background:var(--accent-volt);transform:translate(-50%,-50%)"></div>`;
+      const y = pos === 'above' ? `calc(50% - ${o})` : `calc(50% + ${o})`;
+      h += `<div class="ant-cue" style="position:absolute;top:${y};left:50%;width:2vmin;height:2vmin;background:var(--accent-volt);transform:translate(-50%,-50%)"></div>`;
     }
     this.container.innerHTML = h;
   }
 
   renderTarget(dir, flank, pos) {
-    const t = ARROWS[dir], f = flank === 'congruent' ? t : flank === 'incongruent' ? (dir==='left'?ARROWS.right:ARROWS.left) : ARROWS.dash;
-    const y = pos === 'above' ? `calc(50% - 80px)` : `calc(50% + 80px)`;
+    const t = ARROWS[dir], f = flank === 'congruent' ? t : (dir==='left'?ARROWS.right:ARROWS.left);
+    const y = pos === 'above' ? `calc(50% - 15vmin)` : `calc(50% + 15vmin)`;
     this.container.innerHTML = `<div class="task-fixation">+</div>
-      <div style="position:absolute;top:${y};left:50%;transform:translate(-50%,-50%);display:flex;gap:4px;font-family:var(--font-mono);font-size:32px;color:rgba(255,255,255,0.4)">
+      <div style="position:absolute;top:${y};left:50%;transform:translate(-50%,-50%);display:flex;gap:1vmin;font-family:var(--font-mono);font-size:7vmin;color:rgba(255,255,255,0.4)">
         <span>${f}</span><span>${f}</span><span style="color:var(--accent-volt);font-weight:bold">${t}</span><span>${f}</span><span>${f}</span>
       </div>`;
   }

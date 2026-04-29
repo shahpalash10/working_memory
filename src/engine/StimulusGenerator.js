@@ -49,8 +49,7 @@ function getShuffledGridPositions() {
  * @param {string}  cfg.shape          - 'square' | 'circle'
  * @param {string}  cfg.difficulty     - 'easy'|'medium'|'hard' (controls color similarity)
  */
-export function generateTrial({ setSize, isChange, withDistractors = false, shape = 'square', difficulty = 'medium' }) {
-  const distractorCount = withDistractors ? Math.min(setSize, 16 - setSize) : 0;
+export function generateTrial({ setSize, isChange, distractorCount = 0, shape = 'square', difficulty = 'medium' }) {
   const totalItems = setSize + distractorCount;
 
   const positions = getShuffledGridPositions().slice(0, totalItems);
@@ -78,7 +77,6 @@ export function generateTrial({ setSize, isChange, withDistractors = false, shap
     isChange,
     probedIdx,
     shape,
-    withDistractors,
     distractorCount,
     difficulty,
 
