@@ -43,9 +43,8 @@ export function CompleteView() {
 
   const id = 'CS-' + Date.now().toString(36).toUpperCase().slice(-6) + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
 
-  const totalTrials = session?.trials?.length || 0;
-  const correctTrials = session?.trials?.filter(t => t.isCorrect).length || 0;
-  const overallAccuracy = totalTrials > 0 ? Math.round((correctTrials / totalTrials) * 100) : 0;
+  const scores = session?.trials ? computeFullScores(session.trials) : null;
+  const overallAccuracy = scores ? Math.round(scores.accuracyPure * 100) : 0; // fallback to pure accuracy for simple display
 
   render(`
     <div class="view cv">
@@ -102,6 +101,46 @@ export function CompleteView() {
           <div class="cv-row">
             <span class="cv-row-label">${t('cv_id')}</span>
             <span class="cv-row-val mono">${id}</span>
+          </div>
+        </div>
+
+        <div class="cv-summary-card">
+          <h3 class="cv-summary-title">${t('cv_summary_title')}</h3>
+          <div class="cv-summary-grid">
+            <div class="cv-summary-item">
+              <div class="cs-label">${t('t1_title')}</div>
+              <div class="cs-metrics">
+                <div class="cs-m"><span>${t('cv_k_label')}</span> <strong>${scores.vwmPure.maxK.toFixed(2)}</strong></div>
+                <div class="cs-m"><span>${t('cv_acc_label')}</span> <strong>${Math.round(scores.vwmPure.accuracy*100)}%</strong></div>
+              </div>
+            </div>
+            <div class="cv-summary-item">
+              <div class="cs-label">${t('t2_title')}</div>
+              <div class="cs-metrics">
+                <div class="cs-m"><span>${t('cv_k_label')}</span> <strong>${scores.vwmDistractor.maxK.toFixed(2)}</strong></div>
+                <div class="cs-m"><span>${t('cv_acc_label')}</span> <strong>${Math.round(scores.vwmDistractor.accuracy*100)}%</strong></div>
+              </div>
+            </div>
+            <div class="cv-summary-item">
+              <div class="cs-label">${t('t3_title')}</div>
+              <div class="cs-metrics">
+                <div class="cs-m"><span>${t('cv_rt_label')}</span> <strong>${Math.round(scores.ant.meanRT)}ms</strong></div>
+                <div class="cs-m"><span>${t('cv_acc_label')}</span> <strong>${Math.round(scores.ant.accuracy*100)}%</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cv-history">
+          <h3 class="cv-summary-title">${t('cv_history_title')}</h3>
+          <div class="cv-history-list">
+            ${Storage.getLocalHistory().map(h => `
+              <div class="cv-history-item">
+                <span class="cv-hist-date">${new Date(h.completedAt).toLocaleDateString()}</span>
+                <span class="cv-hist-score">Comp: <strong>${(h.scores?.compositeScore || 0).toFixed(1)}</strong></span>
+                <span class="cv-hist-acc">Acc: <strong>${Math.round((h.scores?.accuracyPure || 0) * 100)}%</strong></span>
+              </div>
+            `).join('')}
           </div>
         </div>
 
@@ -175,5 +214,61 @@ export function CompleteView() {
       animation: pulse-glow 2s infinite;
     }
     .cv-footer { font-size: 0.85rem; color: var(--text-tertiary); }
+
+    .cv-summary-card {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: left;
+    }
+    .cv-summary-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+      margin-bottom: 20px;
+      font-family: var(--font-mono);
+    }
+    .cv-summary-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .cv-summary-item {
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .cv-summary-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .cs-label { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary); }
+    .cs-metrics { display: flex; gap: 24px; }
+    .cs-m { font-family: var(--font-mono); font-size: 12px; }
+    .cs-m span { color: var(--text-tertiary); margin-right: 6px; }
+    .cs-m strong { color: var(--accent-volt); }
+
+    .cv-history {
+      width: 100%;
+      margin-top: 12px;
+      text-align: left;
+    }
+    .cv-history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .cv-history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .cv-hist-date { color: var(--text-tertiary); }
+    .cv-hist-score strong { color: var(--accent-volt); }
+    .cv-hist-acc strong { color: #34d399; }
   `);
 }

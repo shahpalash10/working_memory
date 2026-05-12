@@ -5,6 +5,8 @@
 import { render } from '../utils/dom.js';
 import { navigate, injectStyle } from '../router.js';
 import { t } from '../utils/i18n.js';
+import { Storage } from '../utils/storage.js';
+import { computeVWMScores } from '../scoring/ScoringEngine.js';
 
 const getNextInfo = () => ({
   'vwm-distractor': {
@@ -26,6 +28,12 @@ const getNextInfo = () => ({
 export function TransitionView(params = {}) {
   const next = params.next || 'vwm-distractor';
   const info = getNextInfo()[next] || getNextInfo()['vwm-distractor'];
+  const session = Storage.getCurrentSession();
+  
+  // Calculate results for the task just finished
+  const prevTaskType = next === 'vwm-distractor' ? 'vwm-pure' : 'vwm-distractor';
+  const prevTrials = session?.trials?.filter(t => t.taskType === prevTaskType) || [];
+  const results = computeVWMScores(prevTrials);
 
   render(`
     <div class="view trv">
@@ -36,6 +44,23 @@ export function TransitionView(params = {}) {
         </svg>
 
         <h2 class="trv-title">${t('tr_title')}</h2>
+        
+        <div class="trv-prev-stats">
+          <div style="font-size:10px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px;">${t('tr_score_summary')}</div>
+          <div class="trv-stat-row">
+            <span>${t('tr_accuracy')}</span>
+            <span style="color:#34d399">${Math.round(results.accuracy * 100)}%</span>
+          </div>
+          <div class="trv-stat-row">
+            <span>${t('tr_capacity')}</span>
+            <span style="color:var(--accent-volt)">${results.maxK.toFixed(2)}</span>
+          </div>
+          <div class="trv-stat-row">
+            <span>${t('tr_rt')}</span>
+            <span>${Math.round(results.meanRT)}ms</span>
+          </div>
+        </div>
+
         <p class="trv-sub">${t('tr_break')}</p>
 
         <div class="trv-card" style="border-color:${info.color}22">
@@ -78,6 +103,25 @@ export function TransitionView(params = {}) {
 
     .trv-title { font-size: 2.2rem; color: #34d399; margin-bottom: 4px; }
     .trv-sub   { color: var(--text-secondary); font-size: 1rem; }
+
+    .trv-prev-stats {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 16px 24px;
+      width: 100%;
+      max-width: 320px;
+      text-align: left;
+    }
+    .trv-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    .trv-stat-row:last-child { margin-bottom: 0; }
+    .trv-stat-row span:first-child { color: var(--text-tertiary); }
 
     .trv-card {
       width: 100%;

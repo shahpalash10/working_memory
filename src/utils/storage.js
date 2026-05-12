@@ -25,6 +25,11 @@ export const Storage = {
   clearCurrentSession() {
     localStorage.removeItem('cogscreen_active_session');
   },
+  
+  getLocalHistory() {
+    const h = localStorage.getItem('cogscreen_history');
+    return h ? JSON.parse(h) : [];
+  },
 
   /**
    * SAVE CANDIDATE TO FIREBASE (Cloud)
@@ -37,6 +42,17 @@ export const Storage = {
         // Just in case, also store locally as a backup
       });
       console.log("Candidate saved to cloud with ID: ", docRef.id);
+      
+      // Save to local history for the user to see their progress
+      const history = JSON.parse(localStorage.getItem('cogscreen_history') || '[]');
+      history.unshift({
+        id: docRef.id,
+        scores: candidate.scores,
+        completedAt: candidate.completedAt,
+        taskCount: candidate.trials.length > 100 ? 3 : 1 // simple heuristic
+      });
+      localStorage.setItem('cogscreen_history', JSON.stringify(history.slice(0, 10))); // keep last 10
+      
       return docRef.id;
     } catch (e) {
       console.error("Error saving to Firebase: ", e);

@@ -76,6 +76,10 @@ const DICTIONARY = {
     "tr_of3": "of 3 completed",
     "tr_break": "Take a short break. When you're ready, proceed to the next phase.",
     "tr_continue": "Continue →",
+    "tr_score_summary": "Task Results",
+    "tr_accuracy": "Accuracy",
+    "tr_capacity": "Memory Capacity (K)",
+    "tr_rt": "Avg Response Time",
 
     // Complete
     "cv_title": "Assessment Complete",
@@ -87,6 +91,13 @@ const DICTIONARY = {
     "cv_id": "Assessment ID",
     "cv_submit": "Submitted (Cloud Sync Ready)",
     "cv_close": "You may now close this window.",
+    "cv_summary_title": "Assessment Performance Summary",
+    "cv_score_label": "Score",
+    "cv_k_label": "Capacity",
+    "cv_rt_label": "Speed",
+    "cv_acc_label": "Accuracy",
+    "cv_history_title": "Your Recent Attempts",
+    "cv_history_date": "Date",
 
     // Task View
     "tv_skip": "Skip Section ⤑",
@@ -171,6 +182,10 @@ const DICTIONARY = {
     "tr_of3": "/ 3 完了",
     "tr_break": "短い休憩を取ってください。準備ができたら、次のフェーズに進んでください。",
     "tr_continue": "次へ進む →",
+    "tr_score_summary": "タスク結果",
+    "tr_accuracy": "正解率",
+    "tr_capacity": "記憶容量 (K)",
+    "tr_rt": "平均反応時間",
 
     // Complete
     "cv_title": "評価完了",
@@ -182,6 +197,13 @@ const DICTIONARY = {
     "cv_id": "評価ID",
     "cv_submit": "送信済み (クラウド同期準備完了)",
     "cv_close": "このウィンドウを閉じてかまいません。",
+    "cv_summary_title": "評価パフォーマンスの概要",
+    "cv_score_label": "スコア",
+    "cv_k_label": "容量",
+    "cv_rt_label": "速度",
+    "cv_acc_label": "正解率",
+    "cv_history_title": "最近の履歴",
+    "cv_history_date": "日時",
 
     // Task View
     "tv_skip": "スキップ ⤑",
