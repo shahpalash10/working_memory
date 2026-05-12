@@ -47,14 +47,7 @@ export function TaskView(taskType = 'vwm-pure') {
         <div class="stim-canvas" id="stim-canvas" style="width:${CANVAS_SIZE}px;height:${CANVAS_SIZE}px;position:relative;"></div>
       </div>
 
-      <!-- Legend (distractor only) -->
-      ${isDistractor ? `
-        <div class="dist-legend-fixed" id="dist-legend" style="display:none;">
-          <span class="leg-it"><span class="leg-dot" style="background:#3b82f6"></span>${t('tv_targets', { default: 'Targets' })}</span>
-          <span class="leg-sep">·</span>
-          <span class="leg-it"><span class="leg-dot" style="background:#6b7280;border:1px dashed #9ca3af"></span>${t('tv_distractors', { default: 'Distractors' })}</span>
-        </div>
-      ` : ''}
+
 
       <!-- Response buttons -->
       <div class="task-response" id="task-response" style="display:none;">
@@ -172,7 +165,7 @@ function runVWM(taskType, isDistractor, cdWrap, cdWord, stimWrap, canvas,
   engine.onPhase = (phase, meta) => {
     cdWrap.style.display = 'none'; stimWrap.style.display = 'flex';
     responseArea.style.display = (phase === 'probe') ? 'flex' : 'none';
-    if (legendEl) legendEl.style.display = (phase === 'stimulus') ? 'flex' : 'none';
+
     hudBar.style.width = `${(meta.trialNum / engine.maxTrials) * 100}%`;
     hudTrial.textContent = `TRIAL ${meta.trialNum + 1}`;
   };
