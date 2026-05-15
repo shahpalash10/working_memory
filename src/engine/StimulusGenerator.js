@@ -86,7 +86,7 @@ export function generateTrial({ setSize, isChange, distractorCount = 0, shape = 
         ...pos, color: targetColors[i], type: 'target', shape,
       })),
       ...distractPos.map((pos, i) => ({
-        ...pos, color: '#5a6270', type: 'distractor', shape,
+        ...pos, color: '#ffffff', type: 'distractor', shape,
       })),
     ],
 

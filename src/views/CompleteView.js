@@ -112,6 +112,7 @@ export function CompleteView() {
               <div class="cs-metrics">
                 <div class="cs-m"><span>${t('cv_k_label')}</span> <strong>${scores.vwmPure.maxK.toFixed(2)}</strong></div>
                 <div class="cs-m"><span>${t('cv_acc_label')}</span> <strong>${Math.round(scores.vwmPure.accuracy*100)}%</strong></div>
+                <div class="cs-m"><span>${t('cv_rt_label')}</span> <strong>${Math.round(scores.vwmPure.meanRT)}ms</strong></div>
               </div>
             </div>
             <div class="cv-summary-item">
@@ -119,6 +120,7 @@ export function CompleteView() {
               <div class="cs-metrics">
                 <div class="cs-m"><span>${t('cv_k_label')}</span> <strong>${scores.vwmDistractor.maxK.toFixed(2)}</strong></div>
                 <div class="cs-m"><span>${t('cv_acc_label')}</span> <strong>${Math.round(scores.vwmDistractor.accuracy*100)}%</strong></div>
+                <div class="cs-m"><span>${t('cv_rt_label')}</span> <strong>${Math.round(scores.vwmDistractor.meanRT)}ms</strong></div>
               </div>
             </div>
             <div class="cv-summary-item">

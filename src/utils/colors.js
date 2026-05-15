@@ -13,10 +13,16 @@ export const STIMULUS_COLORS = [
   '#e91e9a',  // Magenta
   '#f1c40f',  // Yellow
   '#9b59b6',  // Purple
-  '#ecf0f1',  // White
   '#e67e22',  // Dark Orange
   '#16a085',  // Dark Teal
   '#8e44ad',  // Dark Purple
+  '#2ecc71',  // Emerald
+  '#3498db',  // Bright Blue
+  '#95a5a6',  // Silver (still distinct from white)
+  '#d35400',  // Pumpkin
+  '#c0392b',  // Pomegranate
+  '#833471',  // Hollyhock
+  '#006266',  // Mediterranean Blue
 ];
 
 // Groups of SIMILAR colors — used to make "different" trials harder
