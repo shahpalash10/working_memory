@@ -72,7 +72,7 @@ export function InstructionsView(params = {}) {
             </div>
             <div class="iv-dist-labels">
               <span><span class="iv-dot" style="background:#3b82f6"></span> ${t('dist_color')}</span>
-              <span><span class="iv-dot" style="background:#6b7280;border:1px dashed #9ca3af"></span> ${t('dist_gray')}</span>
+              <span><span class="iv-dot" style="background:#ffffff; border:1px solid rgba(255,255,255,0.2);"></span> ${t('dist_gray')}</span>
             </div>
             <p class="iv-dist-tip">${t('dist_tip')}</p>
           </div>
@@ -150,7 +150,7 @@ export function InstructionsView(params = {}) {
       width: 36px; height: 36px; border-radius: 5px;
     }
     .target-sq    { background: #3b82f6; }
-    .distractor-sq { background: #6b7280; border: 2px dashed #9ca3af; }
+    .distractor-sq { background: #ffffff; border: 2px solid rgba(255,255,255,0.4); }
     .iv-dist-labels {
       display: flex; gap: 24px; justify-content: center;
       font-size: 13px; color: var(--text-secondary);

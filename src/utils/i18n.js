@@ -25,7 +25,7 @@ const DICTIONARY = {
     "btn_ready": "I'm Ready — Begin →",
     "dist_tip": "This task measures your ability to <strong>filter out irrelevant information</strong> while maintaining memory for relevant items.",
     "dist_color": "Colored = Remember these",
-    "dist_gray": "Gray = IGNORE (distractors)",
+    "dist_gray": "White = IGNORE (distractors)",
     "step_title": "Step by Step",
 
     // Task 1: VWM Pure
@@ -40,9 +40,9 @@ const DICTIONARY = {
     // Task 2: VWM Distractor
     "t2_tag": "TASK 2 OF 3",
     "t2_title": "Working Memory Filtering task",
-    "t2_sum": "Same as before — but now <strong>gray distractor items</strong> also appear. You must <strong>completely ignore</strong> the gray items and remember only the colored ones.",
-    "t2_s1": "Colored target items AND gray distractor items appear together.",
-    "t2_s2": "<strong>Focus only on the colored items</strong> — ignore everything gray.",
+    "t2_sum": "Same as before — but now <strong>white distractor items</strong> also appear. You must <strong>completely ignore</strong> the white items and remember only the colored ones.",
+    "t2_s1": "Colored target items AND white distractor items appear together.",
+    "t2_s2": "<strong>Focus only on the colored items</strong> — ignore everything white.",
     "t2_s3": "A blank period follows — hold the target colors in memory.",
     "t2_s4": "One target reappears in color; the rest are empty outlines.",
     "t2_s5": "Decide if that one colored item is the SAME or DIFFERENT.",
@@ -131,7 +131,7 @@ const DICTIONARY = {
     "btn_ready": "準備完了 — 始める →",
     "dist_tip": "このタスクは、関連するアイテムの記憶を維持しながら、<strong>無関係な情報を除外する能力</strong>を測定します。",
     "dist_color": "色付き = これらを記憶する",
-    "dist_gray": "灰色 = 無視する（妨害）",
+    "dist_gray": "白色 = 無視する（妨害）",
     "step_title": "ステップバイステップ",
 
     // Task 1: VWM Pure
@@ -146,9 +146,9 @@ const DICTIONARY = {
     // Task 2: VWM Distractor
     "t2_tag": "タスク 2 / 3",
     "t2_title": "ワーキングメモリフィルタリングタスク",
-    "t2_sum": "前回と同じですが、今回は<strong>灰色の妨害アイテム</strong>も表示されます。灰色のアイテムは<strong>完全に無視</strong>し、色付きのアイテムだけを覚えてください。",
-    "t2_s1": "色付きのターゲットアイテムと灰色の妨害アイテムが一緒に表示されます。",
-    "t2_s2": "<strong>色付きのアイテムだけに集中してください</strong> — 灰色のものはすべて無視してください。",
+    "t2_sum": "前回と同じですが、今回は<strong>白色の妨害アイテム</strong>も表示されます。白色のアイテムは<strong>完全に無視</strong>し、色付きのアイテムだけを覚えてください。",
+    "t2_s1": "色付きのターゲットアイテムと白色の妨害アイテムが一緒に表示されます。",
+    "t2_s2": "<strong>色付きのアイテムだけに集中してください</strong> — 白色の方はすべて無視してください。",
     "t2_s3": "空白の時間が続きます — ターゲットの色を記憶にとどめてください。",
     "t2_s4": "ターゲットの1つが再び色付きで表示されます。残りは空の輪郭です。",
     "t2_s5": "その色付きのアイテムが同じ（SAME）か違う（DIFFERENT）かを判断してください。",
