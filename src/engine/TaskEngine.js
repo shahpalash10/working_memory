@@ -27,7 +27,7 @@ export class TaskEngine {
     // Define condition blocks
     this.blocks = taskType === 'vwm-pure'
       ? [{t:1, d:0}, {t:2, d:0}, {t:3, d:0}, {t:4, d:0}, {t:6, d:0}, {t:8, d:0}]
-      : [{t:2, d:2}, {t:2, d:4}, {t:3, d:3}, {t:3, d:6}, {t:4, d:4}, {t:4, d:8}];
+      : [{t:1, d:1}, {t:2, d:2}, {t:3, d:3}, {t:4, d:4}, {t:6, d:6}, {t:8, d:8}];
 
     this.blockIdx = 0;
     this.trialsPerBlock = 10;
