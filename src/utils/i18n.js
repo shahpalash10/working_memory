@@ -54,11 +54,11 @@ const DICTIONARY = {
     // Task 3: ANT
     "t3_tag": "TASK 3 OF 3",
     "t3_title": "Attention Network Test",
-    "t3_sum": "An arrow will appear on screen, flanked by other arrows. Identify the direction of the <strong>center arrow only</strong> as fast as possible.",
+    "t3_sum": "An arrow will appear on screen. Identify the direction of the <strong>center arrow</strong> as fast as possible.",
     "t3_s1": "A fixation cross appears in the center.",
     "t3_s2": "Sometimes a brief circle cue will flash — indicating timing or location.",
-    "t3_s3": "An arrow target appears above or below center, surrounded by flankers.",
-    "t3_s4": "Identify only the <strong>center arrow</strong> direction — ignore flankers.",
+    "t3_s3": "An arrow target appears above or below center.",
+    "t3_s4": "Identify the <strong>center arrow</strong> direction.",
     "t3_s5": "Press <kbd>←</kbd> for LEFT, <kbd>→</kbd> for RIGHT.",
     "t3_s6": "Respond as quickly and accurately as possible.",
 
@@ -163,11 +163,11 @@ const DICTIONARY = {
     // Task 3: ANT
     "t3_tag": "タスク 3 / 3",
     "t3_title": "アテンション・ネットワーク・テスト",
-    "t3_sum": "画面に矢印が表示され、両側を他の矢印に挟まれています。<strong>中央の矢印の方向だけ</strong>を可能な限り早く特定してください。",
+    "t3_sum": "画面に矢印が表示されます。<strong>中央の矢印の方向</strong>を可能な限り早く特定してください。",
     "t3_s1": "中央に十字マークが表示されます。",
     "t3_s2": "時々、短い円のキュー（合図）が点滅します — これはタイミングや場所を示します。",
-    "t3_s3": "中央の上または下に、側面を囲まれた矢印のターゲットが表示されます。",
-    "t3_s4": "<strong>中央の矢印の方向</strong>だけを特定してください — 側面の矢印は無視してください。",
+    "t3_s3": "中央の上または下に矢印のターゲットが表示されます。",
+    "t3_s4": "<strong>中央の矢印の方向</strong>を特定してください。",
     "t3_s5": "左の場合は <kbd>←</kbd> を、右の場合は <kbd>→</kbd> を押してください。",
     "t3_s6": "可能な限り早く、正確に回答してください。",
 
