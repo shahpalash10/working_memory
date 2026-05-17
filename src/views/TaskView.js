@@ -44,7 +44,7 @@ export function TaskView(taskType = 'vwm-pure') {
 
       <!-- Canvas -->
       <div class="stim-wrap" id="stim-wrap" style="display:none;">
-        <div class="stim-canvas" id="stim-canvas" style="width:${CANVAS_SIZE}px;height:${CANVAS_SIZE}px;position:relative;"></div>
+        <div class="stim-canvas" id="stim-canvas"></div>
       </div>
 
 
@@ -82,7 +82,15 @@ export function TaskView(taskType = 'vwm-pure') {
     .countdown-wrap { position:fixed; inset:0; z-index:1100; background:#000; display:flex; align-items:center; justify-content:center; }
     .countdown-word { font-family:var(--font-display); font-size:6rem; font-weight:700; letter-spacing:0.2em; }
     .countdown-word.go { color:var(--accent-volt); }
-    .stim-canvas { position:relative; }
+    .stim-canvas {
+      position: relative;
+      width: 72vmin;
+      height: 72vmin;
+      max-width: 720px;
+      max-height: 720px;
+      min-width: 320px;
+      min-height: 320px;
+    }
     .task-fixation { color:#fff; opacity:0.2; font-size:32px; font-family:var(--font-mono); position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
     .task-response { position:fixed; bottom:60px; display:flex; gap:30px; z-index:100; }
     .resp-btn { position:relative; padding:18px 50px; font-family:var(--font-body); font-weight:700; font-size:13px; background:transparent; border:1px solid rgba(255,255,255,0.1); color:#fff; cursor:pointer; transition:0.2s; }

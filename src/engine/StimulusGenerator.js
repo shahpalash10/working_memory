@@ -146,10 +146,10 @@ function makeItem({ x, y, color, shape, type, isEmpty, isProbed }) {
 
   el.style.cssText = `
     position: absolute;
-    left: ${x}px;
-    top: ${y}px;
-    width: ${ITEM_PX}px;
-    height: ${ITEM_PX}px;
+    left: ${(x / CANVAS_PX) * 100}%;
+    top: ${(y / CANVAS_PX) * 100}%;
+    width: ${(ITEM_PX / CANVAS_PX) * 100}%;
+    height: ${(ITEM_PX / CANVAS_PX) * 100}%;
     border-radius: ${isCircle ? '50%' : '8px'};
     background-color: ${isEmpty ? 'transparent' : color};
     border: ${
