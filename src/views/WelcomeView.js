@@ -445,6 +445,7 @@ export function WelcomeView() {
     }
     .legal-modal-body p {
       margin-bottom: 16px;
+      color: #ffffff !important;
     }
     .legal-modal-body ul {
       margin-bottom: 16px;
@@ -452,6 +453,7 @@ export function WelcomeView() {
     }
     .legal-modal-body li {
       margin-bottom: 8px;
+      color: #ffffff !important;
     }
     .legal-table {
       width: 100%;
