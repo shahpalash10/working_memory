@@ -75,7 +75,7 @@ export function TaskView(taskType = 'vwm-pure') {
     .hud-skip-btn:hover { border-color:var(--accent-volt); color:var(--accent-volt); }
     .hud-skip-btn:active { transform:scale(0.95); background:rgba(255,255,255,0.1); }
     .feedback-overlay { position:fixed; inset:0; z-index:500; pointer-events:none; display:flex; align-items:center; justify-content:center; }
-    .f-tick { font-size:10rem; font-weight:900; font-family:var(--font-display); animation: fPop 0.5s ease-out forwards; }
+    .f-tick { font-size:18vmin; font-weight:900; font-family:var(--font-display); animation: fPop 0.5s ease-out forwards; }
     .f-tick.correct { color:#b8f400; text-shadow:0 0 60px rgba(184,244,0,0.4); }
     .f-tick.wrong   { color:#ff4d4d; text-shadow:0 0 60px rgba(255,77,77,0.4); }
     @keyframes fPop { 0%{opacity:0;transform:scale(0.4)} 40%{opacity:1;transform:scale(1.05)} 100%{opacity:0;transform:scale(1)} }
@@ -91,7 +91,7 @@ export function TaskView(taskType = 'vwm-pure') {
       min-width: 320px;
       min-height: 320px;
     }
-    .task-fixation { color:#fff; opacity:0.2; font-size:32px; font-family:var(--font-mono); position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+    .task-fixation { color:#fff; opacity:0.2; font-size:6vmin; font-family:var(--font-mono); position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
     .task-response { position:fixed; bottom:60px; display:flex; gap:30px; z-index:100; }
     .resp-btn { position:relative; padding:18px 50px; font-family:var(--font-body); font-weight:700; font-size:13px; background:transparent; border:1px solid rgba(255,255,255,0.1); color:#fff; cursor:pointer; transition:0.2s; }
     .resp-btn:hover { border-color:var(--accent-volt); color:var(--accent-volt); transform:translateY(-2px); }
