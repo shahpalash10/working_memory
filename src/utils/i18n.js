@@ -15,11 +15,14 @@ const DICTIONARY = {
     "gender_other": "Other",
     "gender_none": "Do not want to declare",
     "label_handle": "Gamer Handle",
-    "privacy_text": "I agree to the <a href='#' style='color:var(--accent-volt); text-decoration:none;'>Privacy Policy</a> and consent to the collection of my cognitive and device telemetry data for evaluation purposes.",
+    "privacy_text": "I agree to the <a href='#' id='agree-privacy-link' style='color:var(--accent-volt); text-decoration:none;'>Privacy Policy</a> and consent to the collection of my cognitive and device telemetry data for evaluation purposes.",
     "disclaimer_text": "Please secure <strong>12 minutes</strong> to complete this task. If you are not able to complete all tasks in a row within 12 mins, you will need to try again. The system logs you out automatically.",
     "btn_init": "Initialize Assessment →",
     "powered_by": "Powered by",
     "lang_toggle": "日本語",
+    "legal_privacy": "Privacy Policy",
+    "legal_accessibility": "Accessibility Statement",
+    "legal_act": "Act on Specified Commercial Transactions",
 
     // Instructions
     "btn_ready": "I'm Ready — Begin →",
@@ -121,11 +124,14 @@ const DICTIONARY = {
     "gender_other": "その他",
     "gender_none": "回答しない",
     "label_handle": "ゲーマーハンドル",
-    "privacy_text": "<a href='#' style='color:var(--accent-volt); text-decoration:none;'>プライバシーポリシー</a>に同意し、評価目的での認知およびデバイステレメトリデータの収集に同意します。",
+    "privacy_text": "<a href='#' id='agree-privacy-link-ja' style='color:var(--accent-volt); text-decoration:none;'>プライバシーポリシー</a>に同意し、評価目的での認知およびデバイステレメトリデータの収集に同意します。",
     "disclaimer_text": "このタスクを完了するために<strong>12分</strong>を確保してください。12分以内にすべてのタスクを連続して完了できない場合は、もう一度やり直す必要があります。システムは自動的にログアウトします。",
     "btn_init": "評価を開始する →",
     "powered_by": "提供：",
     "lang_toggle": "English",
+    "legal_privacy": "プライバシーポリシー",
+    "legal_accessibility": "アクセシビリティ方針",
+    "legal_act": "特定商取引法に基づく表記",
 
     // Instructions
     "btn_ready": "準備完了 — 始める →",
