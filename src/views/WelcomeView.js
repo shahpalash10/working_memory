@@ -221,10 +221,8 @@ export function WelcomeView() {
             <a href="#" id="link-privacy" style="color:#ffffff; text-decoration:none; transition: color var(--transition-fast);">${t('legal_privacy')}</a>
             <span style="color:#666;">|</span>
             <a href="#" id="link-accessibility" style="color:#ffffff; text-decoration:none; transition: color var(--transition-fast);">${t('legal_accessibility')}</a>
-            <span style="color:#666;">|</span>
-            <a href="#" id="link-act" style="color:#ffffff; text-decoration:none; transition: color var(--transition-fast);">${t('legal_act')}</a>
           </div>
-          <span style="color: #666;">v1.2.4-stable</span>
+          <span style="color: #666;">v1.2</span>
         </footer>
       </div>
 
@@ -527,7 +525,7 @@ export function WelcomeView() {
   };
 
   // Bind links
-  ['privacy', 'accessibility', 'act'].forEach(type => {
+  ['privacy', 'accessibility'].forEach(type => {
     const el = document.getElementById(`link-${type}`);
     if (el) {
       el.addEventListener('click', (e) => {
