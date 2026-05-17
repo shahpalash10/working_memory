@@ -188,7 +188,7 @@ export class ANTEngine {
     const y = pos === 'above' ? `calc(50% - 15vmin)` : `calc(50% + 15vmin)`;
     this.container.innerHTML = `<div class="task-fixation">+</div>
       <div style="position:absolute;top:${y};left:50%;transform:translate(-50%,-50%);display:flex;gap:1vmin;font-family:var(--font-mono);font-size:7vmin;color:rgba(255,255,255,0.4)">
-        <span>${f}</span><span>${f}</span><span style="color:var(--accent-volt);font-weight:bold">${t}</span><span>${f}</span><span>${f}</span>
+        <span>${f}</span><span>${f}</span><span>${t}</span><span>${f}</span><span>${f}</span>
       </div>`;
   }
 }

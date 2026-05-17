@@ -36,6 +36,7 @@ export class TaskEngine {
     this.streak = 0;
     this.mistakesInBlock = 0;
     this.trialsInBlock = 0;
+    this.consecutiveMistakes = 0;
 
     this.trialNum = 0;
     this.running  = false;
@@ -192,9 +193,12 @@ export class TaskEngine {
 
     if (isCorrect) {
       this.streak++;
+      this.consecutiveMistakes = 0;
       if (this.streak >= 2) {
-        // Advance!
-        this.blockIdx++;
+        // Advance only if not at the maximum block index
+        if (this.blockIdx < this.blocks.length - 1) {
+          this.blockIdx++;
+        }
         this.streak = 0;
         this.mistakesInBlock = 0;
         this.trialsInBlock = 0;
@@ -202,6 +206,7 @@ export class TaskEngine {
     } else {
       this.streak = 0;
       this.mistakesInBlock++;
+      this.consecutiveMistakes++;
     }
 
     const record = {
@@ -216,9 +221,9 @@ export class TaskEngine {
     if (this.onTrial) this.onTrial(record);
 
     // After trial processing, check termination
-    // 3 mistakes means mathematically impossible to hit >75% (8/10)
-    if (this.mistakesInBlock >= 3 || this.trialsInBlock >= this.trialsPerBlock) {
-      this.running = false; // Terminate task at their best level
+    // Keep it going until the person gets three wrong in a row (consecutively)
+    if (this.consecutiveMistakes >= 3) {
+      this.running = false; // Terminate task
     }
 
     // Clear canvas during feedback pause — overlay handles the tick/cross

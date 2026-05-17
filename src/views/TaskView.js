@@ -166,7 +166,7 @@ function runVWM(taskType, isDistractor, cdWrap, cdWord, stimWrap, canvas,
     cdWrap.style.display = 'none'; stimWrap.style.display = 'flex';
     responseArea.style.display = (phase === 'probe') ? 'flex' : 'none';
 
-    hudBar.style.width = `${(meta.trialNum / engine.maxTrials) * 100}%`;
+    hudBar.style.width = `${Math.min(100, (meta.trialNum / engine.maxTrials) * 100)}%`;
     hudTrial.textContent = `TRIAL ${meta.trialNum + 1}`;
   };
 
