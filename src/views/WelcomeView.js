@@ -206,9 +206,9 @@ export function WelcomeView() {
             <div class="wv-footer" style="flex-direction: column; align-items: stretch; gap: 16px;">
               <div class="privacy-wrap" style="display:flex; align-items:flex-start; gap:12px;">
                 <input type="checkbox" id="r-privacy" required style="margin-top:2px; width:auto; cursor:pointer;" />
-                <label for="r-privacy" style="font-size:12px; color:#a0a0a5; line-height:1.4; cursor:pointer; font-family:var(--font-body);">${t('privacy_text')}</label>
+                <label for="r-privacy" style="font-size:12px; color:#ffffff; line-height:1.4; cursor:pointer; font-family:var(--font-body);">${t('privacy_text')}</label>
               </div>
-              <p class="notice" style="max-width:none; color:#7a7a7f;">
+              <p class="notice" style="max-width:none; color:#ffffff;">
                 <span>${t('disclaimer_text')}</span>
               </p>
               <button type="submit" class="btn-volt" style="align-self: flex-end;">${t('btn_init')}</button>
@@ -218,13 +218,13 @@ export function WelcomeView() {
 
         <footer class="wv-legal" style="flex-direction: column; align-items: center; gap: 8px;">
           <div class="legal-links" style="display:flex; gap:16px; font-size:11px; margin-bottom: 8px;">
-            <a href="#" id="link-privacy" style="color:var(--text-secondary); text-decoration:none; transition: color var(--transition-fast);">${t('legal_privacy')}</a>
-            <span style="color:#333;">|</span>
-            <a href="#" id="link-accessibility" style="color:var(--text-secondary); text-decoration:none; transition: color var(--transition-fast);">${t('legal_accessibility')}</a>
-            <span style="color:#333;">|</span>
-            <a href="#" id="link-act" style="color:var(--text-secondary); text-decoration:none; transition: color var(--transition-fast);">${t('legal_act')}</a>
+            <a href="#" id="link-privacy" style="color:#ffffff; text-decoration:none; transition: color var(--transition-fast);">${t('legal_privacy')}</a>
+            <span style="color:#666;">|</span>
+            <a href="#" id="link-accessibility" style="color:#ffffff; text-decoration:none; transition: color var(--transition-fast);">${t('legal_accessibility')}</a>
+            <span style="color:#666;">|</span>
+            <a href="#" id="link-act" style="color:#ffffff; text-decoration:none; transition: color var(--transition-fast);">${t('legal_act')}</a>
           </div>
-          <span style="color: #333;">v1.2.4-stable</span>
+          <span style="color: #666;">v1.2.4-stable</span>
         </footer>
       </div>
 
@@ -280,7 +280,7 @@ export function WelcomeView() {
 
     .wv-tagline {
       font-size: 1.1rem;
-      color: #7a7a7f;
+      color: #ffffff;
       white-space: nowrap;
     }
 
@@ -306,7 +306,7 @@ export function WelcomeView() {
       font-family: var(--font-mono);
       font-size: 11px;
       text-transform: uppercase;
-      color: #5a5a5f;
+      color: #ffffff;
       letter-spacing: 0.1em;
     }
 
@@ -341,7 +341,7 @@ export function WelcomeView() {
     .wv-legal {
       margin-top: 48px;
       display: flex; justify-content: center;
-      font-family: var(--font-mono); font-size: 10px; color: #3a3a3f;
+      font-family: var(--font-mono); font-size: 10px; color: #ffffff;
       text-transform: uppercase; letter-spacing: 0.2em;
     }
     
@@ -423,7 +423,7 @@ export function WelcomeView() {
       overflow-y: auto;
       font-size: 14px;
       line-height: 1.6;
-      color: var(--text-secondary);
+      color: #ffffff;
       max-height: calc(80vh - 70px);
       text-align: left;
     }
@@ -471,7 +471,7 @@ export function WelcomeView() {
       font-weight: 600;
     }
     .legal-table td {
-      color: var(--text-secondary);
+      color: #ffffff;
     }
     
     /* Scrollbar styling */
